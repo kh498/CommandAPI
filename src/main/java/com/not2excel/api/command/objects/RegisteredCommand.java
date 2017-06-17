@@ -14,6 +14,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 /**
@@ -22,136 +23,51 @@ import java.util.Map.Entry;
  * All rights Reserved
  * Please read included LICENSE file
  */
-public class RegisteredCommand extends ParentCommand implements CommandExecutor, Handler
-{
+public class RegisteredCommand extends ParentCommand implements CommandExecutor, Handler {
     private final QueuedCommand queuedCommand;
-    private String  command = "";
+    private String command = "";
     private Handler handler = this;
 
-    public RegisteredCommand(QueuedCommand queuedCommand)
-    {
+    public RegisteredCommand(final QueuedCommand queuedCommand) {
         this.queuedCommand = queuedCommand;
-        this.setHandler(new DefaultHandler(queuedCommand));
+        this.handler = new DefaultHandler(queuedCommand);
     }
-
-    @Override
-    public boolean onCommand(CommandSender sender, Command command, String s, String[] args)
-    {
-        try
-        {
-            CommandHandler commandHandler = getMethod().getAnnotation(CommandHandler.class);
-            List<String> strings = Arrays.asList(args);
-            getHandler().handleCommand(new CommandInfo(this, this, commandHandler, sender, s,
-                                                       sortQuotedArgs(strings), commandHandler.usage(),
-                                                       commandHandler.permission()));
-        }
-        catch (CommandException e)
-        {
-            Colorizer.send(sender, "<red>Failed to handle command properly.");
-        }
-        return true;
-    }
-
-    @Override
-    public void handleCommand(CommandInfo info) throws CommandException
-    {
-        try
-        {
-            this.getMethod().invoke(queuedCommand.getObject(), info);
-        }
-        catch (IllegalAccessException e)
-        {
-            e.printStackTrace();
-        }
-        catch (InvocationTargetException e)
-        {
-            e.printStackTrace();
-        }
-    }
-
-    public void displayDefaultUsage(CommandSender sender, String command, ParentCommand parentCommand)
-    {
-        String prefix;
-        Colorizer.send(sender, "<cyan><=====EXceL Command API=====>");
-        if (command.equals(getCommand()))
-        {
-            Colorizer.send(sender, "<purple>Usage: /%s", command);
-            prefix = command;
-        }
-        else
-        {
-            Colorizer.send(sender, "<purple>Usage for '%s'", command);
-            prefix = recursivelyAddToPrefix(getCommand(), command);
-        }
-        recursivelyDisplayChildUsage(sender, parentCommand, prefix);
-    }
-
-    public String recursivelyAddToPrefix(String prefix, String command)
-    {
-        for (Entry<String, ChildCommand> entry : getChildCommands().entrySet())
-        {
-            if (entry.getKey().equals(command))
-            {
-                prefix = prefix + " " + command;
-            }
-            else
-            {
-                prefix = prefix + " " + entry.getKey();
-                recursivelyAddToPrefix(prefix, command);
-            }
-        }
-        return prefix;
-    }
-
-    public void recursivelyDisplayChildUsage(CommandSender sender, ParentCommand parentCommand, String prefix)
-    {
-        for (Entry<String, ChildCommand> entry : parentCommand.getChildCommands().entrySet())
-        {
-            String usage = entry.getValue().getUsage();
-            String description = entry.getValue().getDescription();
-            Colorizer.send(sender, "/%s %s %s %s", prefix, entry.getKey(), usage, description);
-            if (!entry.getValue().getChildCommands().isEmpty())
-            {
+    private static void recursivelyDisplayChildUsage(final CommandSender sender, final ParentCommand parentCommand,
+                                                     String prefix) {
+        for (final Entry<String, ChildCommand> entry : parentCommand.getChildCommands().entrySet()) {
+            final String description = entry.getValue().getDescription();
+            Colorizer.send(sender, "/%s %s <gray>%s", prefix, entry.getKey(), description);
+            if (!entry.getValue().getChildCommands().isEmpty()) {
                 prefix += " " + entry.getKey();
                 recursivelyDisplayChildUsage(sender, entry.getValue(), prefix);
             }
         }
     }
-
-    public List<String> sortQuotedArgs(List<String> args)
-    {
+    private static List<String> sortQuotedArgs(final List<String> args) {
         return sortEnclosedArgs(args, '"');
     }
 
-    private List<String> sortEnclosedArgs(List<String> args, char c)
-    {
-        List<String> strings = new ArrayList<String>(args.size());
-        for (int i = 0; i < args.size(); ++i)
-        {
+    private static List<String> sortEnclosedArgs(final List<String> args, final char c) {
+        final List<String> strings = new ArrayList<>(args.size());
+        for (int i = 0; i < args.size(); ++i) {
             String arg = args.get(i);
-            if (arg.length() == 0)
-            {
+            if (arg.length() == 0) {
                 continue;
             }
-            if (arg.charAt(0) == c)
-            {
+            if (arg.charAt(0) == c) {
                 int j;
                 final StringBuilder builder = new StringBuilder();
-                for (j = i; j < args.size(); ++j)
-                {
-                    String arg2 = args.get(j);
-                    if (arg2.charAt(arg2.length() - 1) == c && arg2.length() >= 1)
-                    {
+                for (j = i; j < args.size(); ++j) {
+                    final String arg2 = args.get(j);
+                    if (arg2.charAt(arg2.length() - 1) == c && arg2.length() >= 1) {
                         builder.append(j != i ? " " : "").append(arg2.substring(j == i ? 1 : 0, arg2.length() - 1));
                         break;
                     }
-                    else
-                    {
+                    else {
                         builder.append(j == i ? arg2.substring(1) : " " + arg2);
                     }
                 }
-                if (j < args.size())
-                {
+                if (j < args.size()) {
                     arg = builder.toString();
                     i = j;
                 }
@@ -160,53 +76,92 @@ public class RegisteredCommand extends ParentCommand implements CommandExecutor,
         }
         return strings;
     }
+    @Override
+    public boolean onCommand(final CommandSender sender, final Command command, final String s, final String[] args) {
+        try {
+            final CommandHandler commandHandler = getMethod().getAnnotation(CommandHandler.class);
+            final List<String> strings = Arrays.asList(args);
+            this.handler.handleCommand(
+                new CommandInfo(this, this, commandHandler, sender, s, sortQuotedArgs(strings), commandHandler.usage(),
+                                commandHandler.permission()));
+        } catch (final CommandException e) {
+            Colorizer.send(sender, "<red>Failed to handle command properly.");
+        }
+        return true;
+    }
+    @Override
+    public void handleCommand(final CommandInfo info) throws CommandException {
+        try {
+            this.getMethod().invoke(this.queuedCommand.getObject(), info);
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+    }
+    public void displayDefaultUsage(final CommandSender sender, final String command, final ParentCommand parentCommand,
+                                    final String rawCommand) {
+        final String prefix;
 
-    private Method getMethod()
-    {
-        return queuedCommand.getMethod();
+        final String usage = "".equals(getCommandHandler().usage()) ? command : getCommandHandler().usage();
+        Colorizer.send(sender, "<red>Usage: %s", usage);
+        if (command.equals(getCommand())) {
+            prefix = command;
+        }
+        else {
+            final String baseCmd = rawCommand.replaceAll("\\.", " ");
+            final StringBuilder builder = new StringBuilder(baseCmd);
+            prefix = recursivelyAddToPrefix(builder, command, parentCommand.getChildCommands()).toString();
+        }
+        recursivelyDisplayChildUsage(sender, parentCommand, prefix);
+    }
+    /**
+     * recursively create the complete subcommand map of a command
+     */
+    private static StringBuilder recursivelyAddToPrefix(final StringBuilder builder, final String parentCommand,
+                                                        final Map<String, ChildCommand> childCommandMap) {
+        for (final Entry<String, ChildCommand> entry : childCommandMap.entrySet()) {
+            if (entry.getKey().equals(parentCommand)) {
+                builder.append(" ").append(entry.getKey());
+                final ChildCommand cc = entry.getValue();
+                recursivelyAddToPrefix(builder, cc.getCommand(), cc.getChildCommands());
+            }
+        }
+        return builder;
+    }
+    private Method getMethod() {
+        return this.queuedCommand.getMethod();
     }
 
-    public CommandHandler getCommandHandler()
-    {
+    public CommandHandler getCommandHandler() {
         return getMethod().getAnnotation(CommandHandler.class);
     }
 
-    public Handler getHandler()
-    {
-        return handler;
+    public Handler getHandler() {
+        return this.handler;
     }
 
-    public void setHandler(Handler handler)
-    {
+    public void setHandler(final Handler handler) {
         this.handler = handler;
     }
 
-    public String getPermission()
-    {
-        if (queuedCommand == null)
-        {
+    public String getPermission() {
+        if (this.queuedCommand == null) {
             return "";
         }
-        else
-        {
+        else {
             return getCommandHandler().permission();
         }
     }
 
-    public String getCommand()
-    {
-        if (queuedCommand == null)
-        {
-            return command;
+    public String getCommand() {
+        if (this.queuedCommand == null) {
+            return this.command;
         }
-        else
-        {
+        else {
             return getCommandHandler().command();
         }
     }
 
-    public void setCommand(String command)
-    {
+    public void setCommand(final String command) {
         this.command = command;
     }
 }

@@ -7,8 +7,8 @@ import com.not2excel.api.command.objects.ParentCommand;
 import com.not2excel.api.command.objects.QueuedCommand;
 import com.not2excel.api.util.Colorizer;
 
-import java.util.Collections;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -17,132 +17,101 @@ import java.util.List;
  * All rights Reserved
  * Please read included LICENSE file
  */
-public class DefaultHandler implements Handler
-{
+public class DefaultHandler implements Handler {
     private final QueuedCommand queue;
 
-    public DefaultHandler(QueuedCommand queue)
-    {
+    public DefaultHandler(final QueuedCommand queue) {
         this.queue = queue;
     }
 
     @Override
-    public void handleCommand(CommandInfo info) throws CommandException
-    {
-        List<String> strings = info.getArgs();
-        ParentCommand parentCommand = info.getParentCommand();
-        String command = info.getCommand();
+    public void handleCommand(final CommandInfo info) throws CommandException {
+        final List<String> strings = info.getArgs();
+        final ParentCommand parentCommand = info.getParentCommand();
+        final String command = info.getCommand();
 
-        if (strings.size() == 0 || parentCommand.getChildCommands().size() == 0)
-        {
-            if (queue != null)
-            {
-                try
-                {
+        if (strings.size() == 0 || parentCommand.getChildCommands().size() == 0) {
+            if (this.queue != null) {
+                try {
                     sendCommand(info);
-                }
-                catch(CommandException e)
-                {
+                } catch (final CommandException e) {
                     e.printStackTrace();
                 }
             }
-            else
-            {
-                info.getRegisteredCommand().displayDefaultUsage(info.getSender(), command, info.getParentCommand());
+            else {
+                info.getRegisteredCommand()
+                    .displayDefaultUsage(info.getSender(), command, info.getParentCommand(), null);
             }
         }
-        else if (strings.size() > 0)
-        {
-            if (strings.get(0).equalsIgnoreCase("help") && !parentCommand.getChildCommands().containsKey("help"))
-            {
-
-                if (info.getUsage().equals(""))
-                {
-                    info.getRegisteredCommand().displayDefaultUsage(info.getSender(), command, info.getParentCommand());
+        else if (strings.size() > 0) {
+            if ("help".equalsIgnoreCase(strings.get(0)) && !parentCommand.getChildCommands().containsKey("help")) {
+                final CommandHandler ch = this.queue.getMethod().getAnnotation(CommandHandler.class);
+                if ("".equals(info.getUsage())) {
+                    info.getRegisteredCommand()
+                        .displayDefaultUsage(info.getSender(), command, info.getParentCommand(), ch.command());
                 }
-                else
-                {
+                else {
                     info.getSender().sendMessage(info.getUsage());
                 }
                 return;
             }
-            ChildCommand child = parentCommand.getChildCommands().get(strings.get(0));
-            if (child == null)
-            {
+            final ChildCommand child = parentCommand.getChildCommands().get(strings.get(0));
+            if (child == null) {
                 //needed to send parent command instead of throwing errors so that parent command can process args
-                try
-                {
+                try {
                     sendCommand(info);
-                }
-                catch(CommandException e)
-                {
+                } catch (final CommandException e) {
                     e.printStackTrace();
                 }
                 return;
             }
-            if (!child.checkPermission(info.getSender()))
-            {
+            if (!child.checkPermission(info.getSender())) {
                 Colorizer.send(info.getSender(), "<red>" + child.getCommandHandler().noPermission());
                 return;
             }
-            CommandInfo cmdInfo = new CommandInfo(info.getRegisteredCommand(), child, child.getCommandHandler(),
-                                                  info.getSender(), strings.get(0),
-                                                  strings.size() == 1 ?
-                                                  Collections.<String> emptyList() :
-                                                  strings.subList(1, strings.size()),
-                                                  info.getUsage(),
-                                                  info.getPermission());
-            try
-            {
+            final CommandInfo cmdInfo =
+                new CommandInfo(info.getRegisteredCommand(), child, child.getCommandHandler(), info.getSender(),
+                                strings.get(0),
+                                strings.size() == 1 ? Collections.emptyList() : strings.subList(1, strings.size()),
+                                info.getUsage(), info.getPermission());
+            try {
                 child.getHandler().handleCommand(cmdInfo);
-            }
-            catch (CommandException e)
-            {
+            } catch (final CommandException e) {
                 Colorizer.send(info.getSender(), "<red>Failed to handle command properly.");
             }
         }
     }
 
-    private void sendCommand(CommandInfo info) throws CommandException
-    {
-    	CommandHandler ch = queue.getMethod().getAnnotation(CommandHandler.class);
-    	boolean playerOnly = ch.playerOnly();
+    private void sendCommand(final CommandInfo info) throws CommandException {
+        final CommandHandler ch = this.queue.getMethod().getAnnotation(CommandHandler.class);
+        final boolean playerOnly = ch.playerOnly();
 
-        if (info.getArgsLength() < info.getCommandHandler().min())
-        {
-            info.getSender().sendMessage("Too few arguments.");
-            info.getRegisteredCommand().displayDefaultUsage(info.getSender(), info.getCommand(), info.getParentCommand());
+        if (info.getArgsLength() < info.getCommandHandler().min()) {
+            Colorizer.send(info.getSender(), "<red>Too few arguments.");
+            info.getRegisteredCommand()
+                .displayDefaultUsage(info.getSender(), info.getCommand(), info.getParentCommand(), ch.command());
             return;
 //            throw new CommandException("Too few arguments.");
         }
-        if (info.getCommandHandler().max() != -1 && info.getArgsLength() > info.getCommandHandler().max())
-        {
-            info.getSender().sendMessage("Too many arguments.");
-            info.getRegisteredCommand().displayDefaultUsage(info.getSender(), info.getCommand(), info.getParentCommand());
+        if (info.getCommandHandler().max() != -1 && info.getArgsLength() > info.getCommandHandler().max()) {
+            Colorizer.send(info.getSender(), "<red>Too many arguments.");
+            info.getRegisteredCommand()
+                .displayDefaultUsage(info.getSender(), info.getCommand(), info.getParentCommand(), ch.command());
             return;
 //            throw new CommandException("Too many arguments.");
         }
-        if (!info.getSender().hasPermission(info.getCommandHandler().permission()))
-        {
+        if (!info.getSender().hasPermission(info.getCommandHandler().permission())) {
             Colorizer.send(info.getSender(), "<red>" + info.getCommandHandler().noPermission());
             return;
         }
-        if(playerOnly && !info.isPlayer())
-        {
-             //maybe make this configurable some how
-             info.getSender().sendMessage("This command can only be executed in game.");
-             return;
+        if (playerOnly && !info.isPlayer()) {
+            //maybe make this configurable some how
+            info.getSender().sendMessage("<red>This command can only be executed in game.");
+            return;
         }
-        try
-        {
-            queue.getMethod().invoke(queue.getObject(), info);
-        }
-            catch (IllegalAccessException e)
-        {
-            e.printStackTrace();
-        }
-            catch (InvocationTargetException e)
-        {
+        try {
+            this.queue.getMethod().invoke(this.queue.getObject(), info);
+        } catch (final IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
     }

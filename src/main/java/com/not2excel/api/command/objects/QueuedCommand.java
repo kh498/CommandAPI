@@ -8,24 +8,20 @@ import java.lang.reflect.Method;
  * All rights Reserved
  * Please read included LICENSE file
  */
-public class QueuedCommand
-{
+public class QueuedCommand {
     private final Object object;
     private final Method method;
 
-    public QueuedCommand(Object object, Method method)
-    {
+    public QueuedCommand(final Object object, final Method method) {
         this.object = object;
         this.method = method;
     }
 
-    public Object getObject()
-    {
-        return object;
+    public Object getObject() {
+        return this.object;
     }
 
-    public Method getMethod()
-    {
-        return method;
+    public Method getMethod() {
+        return this.method;
     }
 }

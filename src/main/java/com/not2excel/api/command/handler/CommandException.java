@@ -9,24 +9,20 @@ import org.bukkit.command.CommandSender;
  * All rights Reserved
  * Please read included LICENSE file
  */
-public class CommandException extends Exception
-{
-    
+public class CommandException extends Exception {
+
     private static final long serialVersionUID = 7841254778605849087L;
-    
-    public CommandException(String s)
-    {
+
+    CommandException(final String s) {
         super(s);
     }
 
-    public CommandException(CommandSender sender, String s)
-    {
+    public CommandException(final CommandSender sender, final String s) {
         super(s);
         Colorizer.send(sender, s);
     }
 
-    public CommandException(CommandSender sender, String s, Object... objects)
-    {
+    public CommandException(final CommandSender sender, final String s, final Object... objects) {
         super(s);
         Colorizer.send(sender, s, objects);
     }

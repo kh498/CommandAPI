@@ -13,8 +13,7 @@ import java.lang.annotation.Target;
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface CommandHandler
-{
+public @interface CommandHandler {
     /**
      * Label of the command
      * Sub-commands have '.' to split the child from the parent
@@ -68,6 +67,7 @@ public @interface CommandHandler
     /**
      * Minimum arguments the command must have
      * must be > 0
+     *
      * @return min
      */
     int min() default 0;
@@ -75,12 +75,14 @@ public @interface CommandHandler
     /**
      * Max arguments the command can have
      * -1 is unlimited
+     *
      * @return max
      */
     int max() default -1;
-    
+
     /**
      * Determines if you want the plugin to be only executed by a player and not on command line
+     *
      * @return true if you want this only to be used by an in game player
      */
     boolean playerOnly() default false;

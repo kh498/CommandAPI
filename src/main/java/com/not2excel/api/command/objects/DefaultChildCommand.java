@@ -8,17 +8,14 @@ import com.not2excel.api.command.handler.DefaultHandler;
  * All rights Reserved
  * Please read included LICENSE file
  */
-public class DefaultChildCommand extends ChildCommand
-{
-    public DefaultChildCommand(String command)
-    {
+public class DefaultChildCommand extends ChildCommand {
+    public DefaultChildCommand(final String command) {
         super(null);
         this.command = command;
         this.setHandler(new DefaultHandler(null));
     }
 
-    public void setPermission(String permission)
-    {
+    public void setPermission(final String permission) {
         this.permission = permission;
     }
 }

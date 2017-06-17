@@ -9,11 +9,9 @@ import com.not2excel.api.util.Colorizer;
  * All rights Reserved
  * Please read included LICENSE file
  */
-public class ErrorHandler implements Handler
-{
+public class ErrorHandler implements Handler {
     @Override
-    public void handleCommand(CommandInfo info) throws CommandException
-    {
+    public void handleCommand(final CommandInfo info) throws CommandException {
         throw new CommandException(Colorizer.formatColors("<red>Failed to handle command properly."));
     }
 }

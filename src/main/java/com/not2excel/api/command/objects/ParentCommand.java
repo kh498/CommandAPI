@@ -9,39 +9,31 @@ import java.util.concurrent.ConcurrentHashMap;
  * All rights Reserved
  * Please read included LICENSE file
  */
-public class ParentCommand
-{
-    protected final Map<String, ChildCommand> childCommands = new ConcurrentHashMap<String, ChildCommand>();
+public class ParentCommand {
+    private final Map<String, ChildCommand> childCommands = new ConcurrentHashMap<>();
 
-    public void addChild(String s, ChildCommand child)
-    {
+    public void addChild(final String s, final ChildCommand child) {
         {
-            synchronized (childCommands)
-            {
-                childCommands.put(s.toLowerCase(), child);
+            synchronized (this.childCommands) {
+                this.childCommands.put(s.toLowerCase(), child);
             }
         }
     }
 
-    public boolean hasChild(String s)
-    {
-        synchronized (childCommands)
-        {
-            return childCommands.containsKey(s.toLowerCase());
+    public boolean hasChild(final String s) {
+        synchronized (this.childCommands) {
+            return this.childCommands.containsKey(s.toLowerCase());
 
         }
     }
 
-    public ChildCommand getChild(String s)
-    {
-        synchronized (childCommands)
-        {
-            return childCommands.get(s.toLowerCase());
+    public ChildCommand getChild(final String s) {
+        synchronized (this.childCommands) {
+            return this.childCommands.get(s.toLowerCase());
         }
     }
 
-    public Map<String, ChildCommand> getChildCommands()
-    {
-        return childCommands;
+    public Map<String, ChildCommand> getChildCommands() {
+        return this.childCommands;
     }
 }

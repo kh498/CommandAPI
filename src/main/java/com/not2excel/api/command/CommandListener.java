@@ -9,6 +9,4 @@ package com.not2excel.api.command;
  * All rights Reserved
  * Please read included LICENSE file
  */
-public interface CommandListener
-{
-}
+public interface CommandListener { }

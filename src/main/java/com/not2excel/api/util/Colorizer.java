@@ -15,14 +15,12 @@ import java.util.regex.Pattern;
  * All rights Reserved
  * Please read included LICENSE file
  */
-public class Colorizer
-{
+public class Colorizer {
     private static final int MAX_SIZE = 1000;
-    private static final Map<String, String>    colorizedStrings = new ConcurrentHashMap<String, String>();
-    private static final Map<String, ChatColor> customColors     = new ConcurrentHashMap<String, ChatColor>();
+    private static final Map<String, String> colorizedStrings = new ConcurrentHashMap<>();
+    private static final Map<String, ChatColor> customColors = new ConcurrentHashMap<>();
 
-    static
-    {
+    static {
         addColor("purple", ChatColor.LIGHT_PURPLE);
         addColor("cyan", ChatColor.AQUA);
         addColor("dark_cyan", ChatColor.DARK_AQUA);
@@ -32,30 +30,24 @@ public class Colorizer
      * Converts simple colors into ChatColor values
      * eg. <blue>test => §9test (actually its technically ChatColor.BLUE, not §9. despite them being the same)
      *
-     * @param string
-     *         input string
+     * @param string input string
+     *
      * @return string with proper ChatColor inputted
      */
-    public static String formatColors(String string)
-    {
-        synchronized (colorizedStrings)
-        {
-            if (colorizedStrings.containsKey(string))
-            {
+    public static String formatColors(final String string) {
+        synchronized (colorizedStrings) {
+            if (colorizedStrings.containsKey(string)) {
                 return colorizedStrings.get(string);
             }
-            else
-            {
-                Pattern p = Pattern.compile("<([a-zA-Z_]*)>");
-                Matcher m = p.matcher(string);
+            else {
+                final Pattern p = Pattern.compile("<([a-zA-Z_]*)>");
+                final Matcher m = p.matcher(string);
                 String colorized = string;
-                while (m.find())
-                {
+                while (m.find()) {
                     colorized = colorized.replaceFirst(p.pattern(), convertToColorCode(m.group(1)));
                 }
                 colorizedStrings.put(string, colorized);
-                if(colorizedStrings.size() > MAX_SIZE)
-                {
+                if (colorizedStrings.size() > MAX_SIZE) {
                     reduceSize();
                 }
                 return colorized;
@@ -66,40 +58,31 @@ public class Colorizer
     /**
      * Formats string and colorizes it
      *
-     * @param string
-     *         String containing colors and %s %d etc.
-     * @param objects
-     *         Objects to be formatted into the string
+     * @param string  String containing colors and %s %d etc.
+     * @param objects Objects to be formatted into the string
+     *
      * @return formatted and colorized String
      */
-    public static String formatString(String string, Object... objects)
-    {
+    public static String formatString(String string, final Object... objects) {
         string = String.format(string, objects);
         return formatColors(string);
     }
 
-    public static void send(CommandSender sender, String string, Object... objects)
-    {
+    public static void send(final CommandSender sender, final String string, final Object... objects) {
         sender.sendMessage(formatString(string, objects));
     }
 
-    public static void addColor(String s, ChatColor color)
-    {
-        synchronized (customColors)
-        {
-            if(!customColors.containsKey(s.toUpperCase()))
-            {
+    public static void addColor(final String s, final ChatColor color) {
+        synchronized (customColors) {
+            if (!customColors.containsKey(s.toUpperCase())) {
                 customColors.put(s.toUpperCase(), color);
             }
         }
     }
 
-    public static void removeColor(String s)
-    {
-        synchronized (customColors)
-        {
-            if(customColors.containsKey(s.toUpperCase()))
-            {
+    public static void removeColor(final String s) {
+        synchronized (customColors) {
+            if (customColors.containsKey(s.toUpperCase())) {
                 customColors.remove(s.toUpperCase());
             }
         }
@@ -108,38 +91,28 @@ public class Colorizer
     /**
      * Wrapper for <code>ChatColor.valueOf()</code>
      *
-     * @param s
-     *         string to get color of
+     * @param s string to get color of
+     *
      * @return ChatColor char
      */
-    private static String convertToColorCode(String s)
-    {
-        synchronized (customColors)
-        {
-            if(customColors.containsKey(s.toUpperCase()))
-            {
+    private static String convertToColorCode(final String s) {
+        synchronized (customColors) {
+            if (customColors.containsKey(s.toUpperCase())) {
                 return customColors.get(s.toUpperCase()).toString();
             }
         }
-        try
-        {
+        try {
             return ChatColor.valueOf(s.toUpperCase()).toString();
-        }
-        catch(Exception e)
-        {
+        } catch (final Exception e) {
             return "<" + s + ">";
         }
     }
 
-    private static void reduceSize()
-    {
-        synchronized (colorizedStrings)
-        {
-            Iterator<String> iterator = colorizedStrings.values().iterator();
-            for(int i = colorizedStrings.size() / 10; i >= 0; --i)
-            {
-                if(!iterator.hasNext())
-                {
+    private static void reduceSize() {
+        synchronized (colorizedStrings) {
+            final Iterator<String> iterator = colorizedStrings.values().iterator();
+            for (int i = colorizedStrings.size() / 10; i >= 0; --i) {
+                if (!iterator.hasNext()) {
                     break;
                 }
                 iterator.next();

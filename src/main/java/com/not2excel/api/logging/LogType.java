@@ -8,8 +8,7 @@ import com.not2excel.api.util.StringUtil;
  * All rights Reserved
  * Please read included LICENSE file
  */
-public enum LogType
-{
+public enum LogType {
 
     INFO,
     WARNING,
@@ -21,9 +20,8 @@ public enum LogType
     DEBUG,
     SUCCESS,
     IO;
-    public String getLevel()
-    {
-        return StringUtil.capatilizeFirstLetterOnly(this.name()).trim();
+    public String getLevel() {
+        return StringUtil.capitalizeFirstLetterOnly(this.name()).trim();
     }
 }
 

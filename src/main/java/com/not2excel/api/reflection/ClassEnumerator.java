@@ -21,8 +21,7 @@ import java.util.jar.JarFile;
  * All rights Reserved
  * Please read included LICENSE file
  */
-public class ClassEnumerator
-{
+public class ClassEnumerator {
     /**
      * Singleton instance
      */
@@ -34,81 +33,60 @@ public class ClassEnumerator
      *
      * @return instance
      */
-    public static ClassEnumerator getInstance()
-    {
-        if (instance == null) ;
+    public static ClassEnumerator getInstance() {
+        if (instance == null) { }
         { instance = new ClassEnumerator(); }
         return instance;
     }
 
     /**
      * Parses a location for jar files and class files
-     *
+     * <p>
      * Recurses through if necessary
      *
-     * @param location
-     *         directory to parse
+     * @param location directory to parse
+     *
      * @return class array
      */
-    public List<Class<?>> getClassesFromLocation(File location)
-    {
-        final List<Class<?>> classes = new ArrayList<Class<?>>();
-        if(location.isDirectory())
-        {
-            for (File file : Arrays.asList(location.listFiles()))
-            {
-                try
-                {
-                    ClassLoader classLoader = new URLClassLoader(new URL[]{file.toURI().toURL()},
-                                                                 this.getClass().getClassLoader());
-                    if (file.getName().toLowerCase().trim().endsWith(".class"))
-                    {
+    public List<Class<?>> getClassesFromLocation(final File location) {
+        final List<Class<?>> classes = new ArrayList<>();
+        if (location.isDirectory()) {
+            for (final File file : Arrays.asList(location.listFiles())) {
+                try {
+                    final ClassLoader classLoader =
+                        new URLClassLoader(new URL[]{file.toURI().toURL()}, this.getClass().getClassLoader());
+                    if (file.getName().toLowerCase().trim().endsWith(".class")) {
                         classes.add(classLoader.loadClass(file.getName().replace(".class", "").replace("/", ".")));
                     }
-                    else if (file.getName().toLowerCase().trim().endsWith(".jar"))
-                    {
+                    else if (file.getName().toLowerCase().trim().endsWith(".jar")) {
                         classes.addAll(getClassesFromJar(file, classLoader));
                     }
-                    else if (file.isDirectory())
-                    {
+                    else if (file.isDirectory()) {
                         classes.addAll(getClassesFromLocation(file));
                     }
-                }
-                catch (MalformedURLException e)
-                {
+                } catch (final MalformedURLException e) {
                     e.printStackTrace();
-                }
-                catch (ClassNotFoundException e)
-                {
+                } catch (final ClassNotFoundException e) {
                     e.printStackTrace();
                 }
             }
         }
-        else
-        {
-            try
-            {
-                ClassLoader classLoader = new URLClassLoader(new URL[]{location.toURI().toURL()},
-                                                             this.getClass().getClassLoader());
-                if (location.getName().toLowerCase().trim().endsWith(".class"))
-                {
+        else {
+            try {
+                final ClassLoader classLoader =
+                    new URLClassLoader(new URL[]{location.toURI().toURL()}, this.getClass().getClassLoader());
+                if (location.getName().toLowerCase().trim().endsWith(".class")) {
                     classes.add(classLoader.loadClass(location.getName().replace(".class", "").replace("/", ".")));
                 }
-                if (location.getName().toLowerCase().trim().endsWith(".jar"))
-                {
+                if (location.getName().toLowerCase().trim().endsWith(".jar")) {
                     classes.addAll(getClassesFromJar(location, classLoader));
                 }
-                if (location.isDirectory())
-                {
+                if (location.isDirectory()) {
                     classes.addAll(getClassesFromLocation(location));
                 }
-            }
-            catch (MalformedURLException e)
-            {
+            } catch (final MalformedURLException e) {
                 e.printStackTrace();
-            }
-            catch (ClassNotFoundException e)
-            {
+            } catch (final ClassNotFoundException e) {
                 e.printStackTrace();
             }
         }
@@ -122,37 +100,27 @@ public class ClassEnumerator
      * @return class array
      */
     @SuppressWarnings("resource")
-    public Class<?>[] getClassesFromThisJar(Object object)
-    {
-        final List<Class<?>> classes = new ArrayList<Class<?>>();
+    public Class<?>[] getClassesFromThisJar(final Object object) {
+        final List<Class<?>> classes = new ArrayList<>();
         ClassLoader classLoader = null;
         URI uri = null;
-        try
-        {
+        try {
             uri = object.getClass().getProtectionDomain().getCodeSource().getLocation().toURI();
-            classLoader = new URLClassLoader(
-                    new URL[]{uri.toURL()},
-                    ClassEnumerator.class.getClassLoader());
-        }
-        catch (URISyntaxException e)
-        {
+            classLoader = new URLClassLoader(new URL[]{uri.toURL()}, ClassEnumerator.class.getClassLoader());
+        } catch (final URISyntaxException e) {
+            e.printStackTrace();
+        } catch (final MalformedURLException e) {
             e.printStackTrace();
         }
-        catch (MalformedURLException e)
-        {
-            e.printStackTrace();
-        }
-        if (uri == null)
-        {
+        if (uri == null) {
             throw new RuntimeException(
-                    "No uri for " + this.getClass().getProtectionDomain().getCodeSource().getLocation());
+                "No uri for " + this.getClass().getProtectionDomain().getCodeSource().getLocation());
         }
-        if(classLoader == null)
-        {
+        if (classLoader == null) {
             throw new RuntimeException(
-                    "No classLoader for " + this.getClass().getProtectionDomain().getCodeSource().getLocation());
+                "No classLoader for " + this.getClass().getProtectionDomain().getCodeSource().getLocation());
         }
-        File file = new File(uri);
+        final File file = new File(uri);
         classes.addAll(getClassesFromLocation(file));
         return classes.toArray(new Class[classes.size()]);
     }
@@ -160,37 +128,27 @@ public class ClassEnumerator
     /**
      * Returns all class files inside a jar
      *
-     * @param file
-     *         jar file
-     * @param classLoader
-     *         classloader created previously using the jar file
+     * @param file        jar file
+     * @param classLoader classloader created previously using the jar file
+     *
      * @return class list
      */
-    public List<Class<?>> getClassesFromJar(File file, ClassLoader classLoader)
-    {
-        final List<Class<?>> classes = new ArrayList<Class<?>>();
-        try
-        {
+    public List<Class<?>> getClassesFromJar(final File file, final ClassLoader classLoader) {
+        final List<Class<?>> classes = new ArrayList<>();
+        try {
             final JarFile jarFile = new JarFile(file);
-            Enumeration<JarEntry> enumeration = jarFile.entries();
-            while (enumeration.hasMoreElements())
-            {
+            final Enumeration<JarEntry> enumeration = jarFile.entries();
+            while (enumeration.hasMoreElements()) {
                 final JarEntry jarEntry = enumeration.nextElement();
-                if (jarEntry.isDirectory() ||
-                    !jarEntry.getName().toLowerCase().trim().endsWith(".class"))
-                {
+                if (jarEntry.isDirectory() || !jarEntry.getName().toLowerCase().trim().endsWith(".class")) {
                     continue;
                 }
                 classes.add(classLoader.loadClass(jarEntry.getName().replace(".class", "").replace("/", ".")));
             }
             jarFile.close();
-        }
-        catch (IOException e)
-        {
+        } catch (final IOException e) {
             e.printStackTrace();
-        }
-        catch (ClassNotFoundException e)
-        {
+        } catch (final ClassNotFoundException e) {
             e.printStackTrace();
         }
         return classes;
@@ -198,34 +156,30 @@ public class ClassEnumerator
 
     /**
      * Processes a directory and retrieves all classes from it and its subdirectories
-     *
+     * <p>
      * Recurses if necessary
      *
-     * @deprecated Currently not used, getClassesFromLocation replaces this
-     * @param directory
-     *         directory file to traverse
+     * @param directory directory file to traverse
+     *
      * @return list of classes
+     *
+     * @deprecated Currently not used, getClassesFromLocation replaces this
      */
     @Deprecated
     @SuppressWarnings("unused")
-    private List<Class<?>> processDirectory(File directory, String append)
-    {
-        final List<Class<?>> classes = new ArrayList<Class<?>>();
-        String[] files = directory.list();
-        for (String fileName : files)
-        {
+    private List<Class<?>> processDirectory(final File directory, final String append) {
+        final List<Class<?>> classes = new ArrayList<>();
+        final String[] files = directory.list();
+        for (final String fileName : files) {
             String className = null;
-            if (fileName.endsWith(".class"))
-            {
+            if (fileName.endsWith(".class")) {
                 className = append + '.' + fileName.replace(".class", "");
             }
-            if (className != null)
-            {
+            if (className != null) {
                 classes.add(loadClass(className.substring(1)));
             }
-            File subdir = new File(directory, fileName);
-            if (subdir.isDirectory())
-            {
+            final File subdir = new File(directory, fileName);
+            if (subdir.isDirectory()) {
                 classes.addAll(processDirectory(subdir, append + "." + fileName));
             }
         }
@@ -236,18 +190,14 @@ public class ClassEnumerator
      * Loads a class based upon the name
      * Simple wrapper that catches ClassNotFoundException
      *
-     * @param className
-     *         name of class (.class is pre removed)
+     * @param className name of class (.class is pre removed)
+     *
      * @return Class if it was loaded properly
      */
-    private Class<?> loadClass(String className)
-    {
-        try
-        {
+    private Class<?> loadClass(final String className) {
+        try {
             return Class.forName(className);
-        }
-        catch (ClassNotFoundException e)
-        {
+        } catch (final ClassNotFoundException e) {
             throw new RuntimeException("Error loading class '" + className + "'");
         }
     }

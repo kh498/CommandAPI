@@ -13,20 +13,20 @@ import java.util.List;
  * All rights Reserved
  * Please read included LICENSE file
  */
-public class CommandInfo
-{
+@SuppressWarnings("unused")
+public class CommandInfo {
     private final RegisteredCommand registeredCommand;
-    private final ParentCommand     parentCommand;
-    private final CommandHandler    commandHandler;
-    private final CommandSender     sender;
-    private final String            command;
-    private final String            usage;
-    private final String            permission;
-    private       List<String>      args;
+    private final ParentCommand parentCommand;
+    private final CommandHandler commandHandler;
+    private final CommandSender sender;
+    private final String command;
+    private final String usage;
+    private final String permission;
+    private List<String> args;
 
-    public CommandInfo(RegisteredCommand registeredCommand, ParentCommand parentCommand, CommandHandler commandHandler,
-                       CommandSender sender, String command, List<String> args, String usage, String permission)
-    {
+    public CommandInfo(final RegisteredCommand registeredCommand, final ParentCommand parentCommand,
+                       final CommandHandler commandHandler, final CommandSender sender, final String command,
+                       final List<String> args, final String usage, final String permission) {
         this.registeredCommand = registeredCommand;
         this.parentCommand = parentCommand;
         this.commandHandler = commandHandler;
@@ -37,194 +37,147 @@ public class CommandInfo
         this.permission = permission;
     }
 
-    public RegisteredCommand getRegisteredCommand()
-    {
-        return registeredCommand;
+    public RegisteredCommand getRegisteredCommand() {
+        return this.registeredCommand;
     }
 
-    public ParentCommand getParentCommand()
-    {
-        return parentCommand;
+    public ParentCommand getParentCommand() {
+        return this.parentCommand;
     }
 
-    public CommandHandler getCommandHandler()
-    {
-        return commandHandler;
+    public CommandHandler getCommandHandler() {
+        return this.commandHandler;
     }
 
-    public CommandSender getSender()
-    {
-        return sender;
-    }
-    
-    public Player getPlayer()
-    {
-    	if(isPlayer())
-    	{
-    		return (Player) sender;
-    	}
-    	return null;
-    }
-    
-    public boolean isPlayer()
-    {
-    	return sender instanceof Player;
+    public CommandSender getSender() {
+        return this.sender;
     }
 
-    public String getCommand()
-    {
-        return command;
+    public Player getPlayer() {
+        if (isPlayer()) {
+            return (Player) this.sender;
+        }
+        return null;
     }
 
-    public List<String> getArgs()
-    {
-        return args;
+    public boolean isPlayer() {
+        return this.sender instanceof Player;
     }
 
-    public void setArgs(List<String> args)
-    {
+    public String getCommand() {
+        return this.command;
+    }
+
+    public List<String> getArgs() {
+        return this.args;
+    }
+
+    public void setArgs(final List<String> args) {
         this.args = args;
     }
 
-    public int getArgsLength()
-    {
-        return args.size();
+    public int getArgsLength() {
+        return this.args.size();
     }
 
-    public String getPermission()
-    {
-        if (commandHandler == null)
-        {
-            return permission;
+    public String getPermission() {
+        if (this.commandHandler == null) {
+            return this.permission;
         }
-        return commandHandler.permission();
+        return this.commandHandler.permission();
     }
 
-    public String noPermission()
-    {
-        if (commandHandler == null)
-        {
+    public String noPermission() {
+        if (this.commandHandler == null) {
             return "";
         }
-        return commandHandler.noPermission();
+        return this.commandHandler.noPermission();
     }
 
-    public String getUsage()
-    {
-        if (commandHandler == null)
-        {
-            return usage;
+    public String getUsage() {
+        if (this.commandHandler == null) {
+            return this.usage;
         }
-        return commandHandler.usage();
+        return this.commandHandler.usage();
     }
 
-    public String getDescription()
-    {
-        if (commandHandler == null)
-        {
+    public String getDescription() {
+        if (this.commandHandler == null) {
             return "";
         }
-        return commandHandler.description();
+        return this.commandHandler.description();
     }
 
-    public String getIndex(int index) throws CommandException
-    {
-        if(index > args.size())
-        {
-            throw new CommandException(sender, "<red>Invalid index number");
+    public String getIndex(final int index) throws CommandException {
+        if (index > this.args.size()) {
+            throw new CommandException(this.sender, "<red>Invalid index number");
         }
-        return args.get(index);
+        return this.args.get(index);
     }
 
-    public String getIndex(int index, String defaultString)
-    {
-        if(index > args.size())
-        {
+    public String getIndex(final int index, final String defaultString) {
+        if (index > this.args.size()) {
             return defaultString;
         }
-        return args.get(index);
+        return this.args.get(index);
     }
 
-    public int getInt(int index) throws CommandException
-    {
-        if(index > args.size())
-        {
-            throw new CommandException(sender, "<red>Invalid index number");
+    public int getInt(final int index) throws CommandException {
+        if (index > this.args.size()) {
+            throw new CommandException(this.sender, "<red>Invalid index number");
         }
-        int returnValue;
-        try
-        {
-            returnValue = Integer.parseInt(args.get(index));
-        }
-        catch(NumberFormatException e)
-        {
-            throw new CommandException(sender, "<red>Index <gold>%d<red> is not an Integer", index);
+        final int returnValue;
+        try {
+            returnValue = Integer.parseInt(this.args.get(index));
+        } catch (final NumberFormatException e) {
+            throw new CommandException(this.sender, "<red>Index <gold>%d<red> is not an Integer", index);
         }
         return returnValue;
     }
 
-    public int getInt(int index, int defaultValue)
-    {
-        if(index > args.size())
-        {
+    public int getInt(final int index, final int defaultValue) {
+        if (index > this.args.size()) {
             return defaultValue;
         }
-        try
-        {
-            return Integer.parseInt(args.get(index));
-        }
-        catch(NumberFormatException e)
-        {
+        try {
+            return Integer.parseInt(this.args.get(index));
+        } catch (final NumberFormatException e) {
             return defaultValue;
         }
     }
 
-    public double getDouble(int index) throws CommandException
-    {
-        if(index > args.size())
-        {
-            throw new CommandException(sender, "<red>Invalid index number");
+    public double getDouble(final int index) throws CommandException {
+        if (index > this.args.size()) {
+            throw new CommandException(this.sender, "<red>Invalid index number");
         }
-        double returnValue;
-        try
-        {
-            returnValue = Double.parseDouble(args.get(index));
-        }
-        catch(NumberFormatException e)
-        {
-            throw new CommandException(sender, "<red>Index <gold>%d<red> is not an Double", index);
+        final double returnValue;
+        try {
+            returnValue = Double.parseDouble(this.args.get(index));
+        } catch (final NumberFormatException e) {
+            throw new CommandException(this.sender, "<red>Index <gold>%d<red> is not an Double", index);
         }
         return returnValue;
     }
 
-    public double getDouble(int index, double defaultValue)
-    {
-        if(index > args.size())
-        {
+    public double getDouble(final int index, final double defaultValue) {
+        if (index > this.args.size()) {
             return defaultValue;
         }
-        try
-        {
-            return Double.parseDouble(args.get(index));
-        }
-        catch(NumberFormatException e)
-        {
+        try {
+            return Double.parseDouble(this.args.get(index));
+        } catch (final NumberFormatException e) {
             return defaultValue;
         }
     }
 
-    public String joinArgs(int index) throws CommandException
-    {
-        if(index > args.size())
-        {
-            throw new CommandException(sender, "<red>Invalid index number");
+    public String joinArgs(final int index) throws CommandException {
+        if (index > this.args.size()) {
+            throw new CommandException(this.sender, "<red>Invalid index number");
         }
-        StringBuilder builder = new StringBuilder();
-        for(int i = index; i < args.size(); ++i)
-        {
-            String arg = args.get(i);
-            if(i != index)
-            {
+        final StringBuilder builder = new StringBuilder();
+        for (int i = index; i < this.args.size(); ++i) {
+            final String arg = this.args.get(i);
+            if (i != index) {
                 builder.append(" ");
             }
             builder.append(arg);

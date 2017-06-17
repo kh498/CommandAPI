@@ -6,13 +6,12 @@ package com.not2excel.api.logging;
  * All rights Reserved
  * Please read included LICENSE file
  */
-public class LevelLogger extends Logger<Object>
-{
+public class LevelLogger extends Logger<Object> {
     /**
      * Singleton instance
      */
     private static volatile LevelLogger instance;
-    private String  logType     = LogType.INFO.getLevel();
+    private String logType = LogType.INFO.getLevel();
     private boolean timeStamped = true;
 
     /**
@@ -20,10 +19,8 @@ public class LevelLogger extends Logger<Object>
      *
      * @return instance
      */
-    public static LevelLogger getInstance()
-    {
-        if (instance == null)
-        { instance = getNewInstance(); }
+    public static LevelLogger getInstance() {
+        if (instance == null) { instance = getNewInstance(); }
         return instance;
     }
 
@@ -32,52 +29,41 @@ public class LevelLogger extends Logger<Object>
      *
      * @return instance of this class
      */
-    public static LevelLogger getNewInstance()
-    {
+    public static LevelLogger getNewInstance() {
         return new LevelLogger();
     }
 
-    public void log(final Object data)
-    {
-        if(timeStamped)
-        {
-            this.log(logType, data);
+    public void log(final Object data) {
+        if (this.timeStamped) {
+            this.log(this.logType, data);
         }
-        else
-        {
-            this.logTimeless(logType, data);
+        else {
+            this.logTimeless(this.logType, data);
         }
     }
 
-    public void log(final LogType logType, final Object data)
-    {
-        if(timeStamped)
-        {
+    public void log(final LogType logType, final Object data) {
+        if (this.timeStamped) {
             this.log(logType.getLevel(), data);
         }
-        else
-        {
+        else {
             this.logTimeless(logType.getLevel(), data);
         }
     }
 
-    public String getLogType()
-    {
-        return logType;
+    public String getLogType() {
+        return this.logType;
     }
 
-    public void setLogType(String logType)
-    {
+    public void setLogType(final String logType) {
         this.logType = logType;
     }
 
-    public boolean isTimeStamped()
-    {
-        return timeStamped;
+    public boolean isTimeStamped() {
+        return this.timeStamped;
     }
 
-    public void setTimeStamped(boolean timeStamped)
-    {
+    public void setTimeStamped(final boolean timeStamped) {
         this.timeStamped = timeStamped;
     }
 }

@@ -11,93 +11,71 @@ import org.bukkit.command.CommandSender;
  * All rights Reserved
  * Please read included LICENSE file
  */
-public class ChildCommand extends ParentCommand
-{
+public class ChildCommand extends ParentCommand {
     private final CommandHandler commandHandler;
-    protected String  command     = "";
-    protected String  usage       = "";
-    protected String  description = "";
-    protected String  permission  = "";
-    private   Handler handler     = null;
+    protected String command = "";
+    protected String usage = "";
+    protected String description = "";
+    protected String permission = "";
+    private Handler handler;
 
-    public ChildCommand(CommandHandler commandHandler)
-    {
+    public ChildCommand(final CommandHandler commandHandler) {
         this.commandHandler = commandHandler;
     }
 
-    public CommandHandler getCommandHandler()
-    {
-        return commandHandler;
+    public CommandHandler getCommandHandler() {
+        return this.commandHandler;
     }
 
-    public Handler getHandler()
-    {
-        if (handler == null)
-        {
+    public Handler getHandler() {
+        if (this.handler == null) {
             return new ErrorHandler();
         }
-        return handler;
+        return this.handler;
     }
 
-    public void setHandler(Handler handler)
-    {
+    public void setHandler(final Handler handler) {
         this.handler = handler;
     }
 
-    public boolean checkPermission(CommandSender sender)
-    {
-        if(commandHandler == null)
-        {
-            return true;
-        }
-        return commandHandler.permission().equals("") || sender.hasPermission(commandHandler.permission());
+    public boolean checkPermission(final CommandSender sender) {
+        return this.commandHandler == null || "".equals(this.commandHandler.permission()) ||
+               sender.hasPermission(this.commandHandler.permission());
     }
 
-    public String getDescription()
-    {
-        if(commandHandler == null)
-        {
-            return description;
+    public String getDescription() {
+        if (this.commandHandler == null) {
+            return this.description;
         }
-        else
-        {
-            return commandHandler.description();
+        else {
+            return this.commandHandler.description();
         }
     }
 
-    public String getUsage()
-    {
-        if(commandHandler == null)
-        {
-            return usage;
+    public String getUsage() {
+        if (this.commandHandler == null) {
+            return this.usage;
         }
-        else
-        {
-            return commandHandler.usage();
+        else {
+            return this.commandHandler.usage();
         }
     }
 
-    public String getPermission()
-    {
-        if(commandHandler == null)
-        {
-            return permission;
+    public String getPermission() {
+        if (this.commandHandler == null) {
+            return this.permission;
         }
-        else
-        {
-            return commandHandler.permission();
+        else {
+            return this.commandHandler.permission();
         }
     }
 
-    public String getCommand()
-    {
-        if(commandHandler == null)
-        {
-            return command;
+    public String getCommand() {
+        if (this.commandHandler == null) {
+            return this.command;
         }
-        else
-        {
-        	String[] list = commandHandler.command().split("\\.");
+        else {
+            final String[] list = this.commandHandler.command().split("\\.");
             return list[list.length - 1 <= 0 ? 0 : list.length - 1];
         }
     }

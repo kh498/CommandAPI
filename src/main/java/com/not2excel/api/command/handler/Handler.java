@@ -8,7 +8,6 @@ import com.not2excel.api.command.objects.CommandInfo;
  * All rights Reserved
  * Please read included LICENSE file
  */
-public interface Handler
-{
+public interface Handler {
     void handleCommand(CommandInfo info) throws CommandException;
 }

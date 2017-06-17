@@ -10,28 +10,23 @@ import org.bukkit.command.CommandSender;
  * All rights Reserved
  * Please read included LICENSE file
  */
-public class AbstractCommand extends Command
-{
-    private CommandExecutor executor = null;
+public class AbstractCommand extends Command {
+    private CommandExecutor executor;
 
-    public AbstractCommand(String name)
-    {
+    public AbstractCommand(final String name) {
         super(name);
     }
 
     @Override
-    public boolean execute(CommandSender commandSender, String s, String[] strings)
-    {
-        return executor != null && executor.onCommand(commandSender, this, s, strings);
+    public boolean execute(final CommandSender commandSender, final String s, final String[] strings) {
+        return this.executor != null && this.executor.onCommand(commandSender, this, s, strings);
     }
 
-    public CommandExecutor getExecutor()
-    {
-        return executor;
+    public CommandExecutor getExecutor() {
+        return this.executor;
     }
 
-    public void setExecutor(CommandExecutor executor)
-    {
+    public void setExecutor(final CommandExecutor executor) {
         this.executor = executor;
     }
 }
