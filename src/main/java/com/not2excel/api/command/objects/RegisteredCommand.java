@@ -35,13 +35,17 @@ public class RegisteredCommand extends ParentCommand implements CommandExecutor,
     private static void recursivelyDisplayChildUsage(final CommandSender sender, final ParentCommand parentCommand,
                                                      String prefix) {
         for (final Entry<String, ChildCommand> entry : parentCommand.getChildCommands().entrySet()) {
-            final String description = entry.getValue().getDescription();
-            final String flags = entry.getValue().getDisplayFlags();
+            final ChildCommand childCommand = entry.getValue();
+            if (!childCommand.isAlias()) {
+                final String description = childCommand.getDescription();
+                final String flags = childCommand.getDisplayFlags();
 
-            Colorizer.send(sender, "<yellow>/%s %s %s<gray>%s", prefix, entry.getKey(), flags, description);
-            if (!entry.getValue().getChildCommands().isEmpty()) {
-                prefix += " " + entry.getKey();
-                recursivelyDisplayChildUsage(sender, entry.getValue(), prefix);
+                Colorizer.send(sender, "<yellow>/%s %s %s<gray>%s", prefix, entry.getKey(), flags, description);
+                System.out.println("childCmd: " + childCommand);
+                if (!childCommand.getChildCommands().isEmpty()) {
+                    prefix += " " + entry.getKey();
+                    recursivelyDisplayChildUsage(sender, childCommand, prefix);
+                }
             }
         }
     }

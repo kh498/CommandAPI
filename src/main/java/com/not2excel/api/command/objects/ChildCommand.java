@@ -13,6 +13,7 @@ import org.bukkit.command.CommandSender;
  */
 public class ChildCommand extends ParentCommand {
     private final CommandHandler commandHandler;
+    private final boolean isAlias;
     protected String command = "";
     protected String usage = "";
     protected String description = "";
@@ -21,8 +22,9 @@ public class ChildCommand extends ParentCommand {
     private Handler handler;
     private String displayFlag = "";
 
-    public ChildCommand(final CommandHandler commandHandler) {
+    public ChildCommand(final CommandHandler commandHandler, final boolean isAlias) {
         this.commandHandler = commandHandler;
+        this.isAlias = isAlias;
     }
 
     public CommandHandler getCommandHandler() {
@@ -100,6 +102,17 @@ public class ChildCommand extends ParentCommand {
             this.displayFlag = flagsBuilder.toString();
         }
         return this.displayFlag;
+    }
+
+    public boolean isAlias() {
+        return this.isAlias;
+    }
+
+    @Override
+    public String toString() {
+        return "ChildCommand{" + "command='" + getCommand() + '\'' + ", usage='" + getUsage() + '\'' +
+               ", description='" + getDescription() + '\'' + ", permission='" + getPermission() + '\'' + ", flags='" +
+               getFlags() + '\'' + ", isAlias='" + this.isAlias + '\'' + '}';
     }
 
 }

@@ -29,7 +29,6 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @SuppressWarnings("unused")
 public class CommandManager {
-    @SuppressWarnings("unused") private static final double version = 1.4;
     private final Plugin plugin;
     private final Map<Integer, List<QueuedCommand>> queuedCommands = new ConcurrentHashMap<>();
     private final Map<String, RegisteredCommand> registeredCommands = new ConcurrentHashMap<>();
@@ -132,9 +131,9 @@ public class CommandManager {
                         }
                         registered = this.registeredCommands.get(list[0]);
                     }
-                    registerChild(queue, commandHandler, registered, list[list.length - 1]);
+                    registerChild(queue, commandHandler, registered, list[list.length - 1], false);
                     for (final String s : commandHandler.aliases()) {
-                        registerChild(queue, commandHandler, registered, s);
+                        registerChild(queue, commandHandler, registered, s, true);
                     }
                 }
             }
@@ -143,8 +142,8 @@ public class CommandManager {
     }
 
     private void registerChild(final QueuedCommand queue, final CommandHandler commandHandler,
-                               final RegisteredCommand registered, final String s) {
-        final ChildCommand child = new ChildCommand(commandHandler);
+                               final RegisteredCommand registered, final String s, final boolean isAlias) {
+        final ChildCommand child = new ChildCommand(commandHandler, isAlias);
         final ParentCommand parentCommand = recursivelyFindInnerMostParent(commandHandler.command(), registered, 1);
         final String[] list = commandHandler.command().split("\\.");
         if (list.length == 2) {
@@ -162,7 +161,7 @@ public class CommandManager {
                 dummyChild.setPermission(registered.getPermission());
                 registered.addChild(s1.toString(), dummyChild);
                 registered.getChild(s1.toString()).setHandler(new DefaultHandler(null));
-                registerChild(queue, commandHandler, registered, s);
+                registerChild(queue, commandHandler, registered, s, false);
                 s1 = new StringBuilder();
                 for (final String s2 : indexer) {
                     if (indexer.indexOf(s2) < index + 1) {
@@ -186,7 +185,7 @@ public class CommandManager {
                 dummyChild.setPermission(childParent.getPermission());
                 childParent.addChild(s1.toString(), dummyChild);
                 childParent.getChild(s1.toString()).setHandler(new DefaultHandler(null));
-                registerChild(queue, commandHandler, registered, s);
+                registerChild(queue, commandHandler, registered, s, false);
                 s1 = new StringBuilder();
                 for (final String s2 : indexer) {
                     if (indexer.indexOf(s2) < index + 1) {
@@ -210,7 +209,7 @@ public class CommandManager {
                 dummyChild.setPermission(childParent.getPermission());
                 childParent.addChild(s1.toString(), dummyChild);
                 childParent.getChild(s1.toString()).setHandler(new DefaultHandler(null));
-                registerChild(queue, commandHandler, registered, s);
+                registerChild(queue, commandHandler, registered, s, false);
                 s1 = new StringBuilder();
                 for (final String s2 : indexer) {
                     if (indexer.indexOf(s2) < index + 1) {

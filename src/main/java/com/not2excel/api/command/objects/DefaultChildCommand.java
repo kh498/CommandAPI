@@ -10,7 +10,7 @@ import com.not2excel.api.command.handler.DefaultHandler;
  */
 public class DefaultChildCommand extends ChildCommand {
     public DefaultChildCommand(final String command) {
-        super(null);
+        super(null, false);
         this.command = command;
         this.setHandler(new DefaultHandler(null));
     }
