@@ -68,7 +68,7 @@ public @interface CommandHandler {
      * Minimum arguments the command must have
      * must be > 0
      *
-     * @return min
+     * @return min number of args
      */
     int min() default 0;
 
@@ -76,7 +76,7 @@ public @interface CommandHandler {
      * Max arguments the command can have
      * -1 is unlimited
      *
-     * @return max
+     * @return max number of args
      */
     int max() default -1;
 
@@ -86,4 +86,11 @@ public @interface CommandHandler {
      * @return true if you want this only to be used by an in game player
      */
     boolean playerOnly() default false;
+
+    /**
+     * Defines the flags available for this command. A flag is a single character such as {@code -f} that will
+     * alter the behaviour of the command. Each character in this string will be counted as a valid flag: extra flags
+     * will be discarded. Accepts * as a catch all.
+     */
+    String flags() default "";
 }

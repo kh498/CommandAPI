@@ -5,7 +5,11 @@ import com.not2excel.api.command.handler.CommandException;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.regex.Pattern;
 
 /**
  * @author Richmond Steele
@@ -23,6 +27,11 @@ public class CommandInfo {
     private final String usage;
     private final String permission;
     private List<String> args;
+    private final boolean playersOnly;
+    private final Set<Character> flags;
+    private boolean hasAsteriskFlag;
+
+    private static final Pattern FLAG = Pattern.compile("^-[a-zA-Z*]$");
 
     public CommandInfo(final RegisteredCommand registeredCommand, final ParentCommand parentCommand,
                        final CommandHandler commandHandler, final CommandSender sender, final String command,
@@ -35,6 +44,24 @@ public class CommandInfo {
         this.args = args;
         this.usage = usage;
         this.permission = permission;
+        this.playersOnly = commandHandler.playerOnly();
+
+        this.flags = new HashSet<>();
+        final ArrayList<String> tempArgs = new ArrayList<>();
+        tempArgs.add(command);
+        tempArgs.addAll(args);
+
+        for (int i = 1; i < tempArgs.size(); ++i) {
+            final String str = tempArgs.get(i);
+            final int length = str.length();
+            if (length == 0) { continue; }
+            if (FLAG.matcher(str).matches()) {
+                if (!this.hasAsteriskFlag && str.charAt(1) == '*') {
+                    this.hasAsteriskFlag = true;
+                }
+                this.flags.add(str.charAt(1));
+            }
+        }
     }
 
     public RegisteredCommand getRegisteredCommand() {
@@ -183,5 +210,17 @@ public class CommandInfo {
             builder.append(arg);
         }
         return builder.toString();
+    }
+
+    public boolean playersOnly() {
+        return this.playersOnly;
+    }
+
+    public Set<Character> getFlags() {
+        return this.flags;
+    }
+
+    public boolean hasFlag(final char c) {
+        return this.hasAsteriskFlag || this.flags.contains(c);
     }
 }

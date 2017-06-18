@@ -84,7 +84,6 @@ public class DefaultHandler implements Handler {
 
     private void sendCommand(final CommandInfo info) throws CommandException {
         final CommandHandler ch = this.queue.getMethod().getAnnotation(CommandHandler.class);
-        final boolean playerOnly = ch.playerOnly();
 
         if (info.getArgsLength() < info.getCommandHandler().min()) {
             Colorizer.send(info.getSender(), "<red>Too few arguments.");
@@ -104,11 +103,23 @@ public class DefaultHandler implements Handler {
             Colorizer.send(info.getSender(), "<red>" + info.getCommandHandler().noPermission());
             return;
         }
-        if (playerOnly && !info.isPlayer()) {
+        if (info.playersOnly() && !info.isPlayer()) {
             //maybe make this configurable some how
             info.getSender().sendMessage("<red>This command can only be executed in game.");
             return;
         }
+        if (!info.hasFlag('*')) {
+            for (final char flag : info.getFlags()) {
+                if (!ch.flags().contains(String.valueOf(flag))) {
+                    Colorizer.send(info.getSender(), "Unknown flag: " + flag);
+                    info.getRegisteredCommand()
+                        .displayDefaultUsage(info.getSender(), info.getCommand(), info.getParentCommand(),
+                                             ch.command());
+                    return;
+                }
+            }
+        }
+
         try {
             this.queue.getMethod().invoke(this.queue.getObject(), info);
         } catch (final IllegalAccessException | InvocationTargetException e) {
