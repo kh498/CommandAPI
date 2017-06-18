@@ -72,6 +72,10 @@ public class DefaultHandler implements Handler {
     private void sendCommand(final CommandInfo info) throws CommandException {
         final CommandHandler ch = this.queue.getMethod().getAnnotation(CommandHandler.class);
 
+        if (ch.strictArgs() && info.getArgsLength() == 0) {
+            info.getRegisteredCommand().displayDefaultUsage(info);
+        }
+
         if (info.getArgsLength() < info.getCommandHandler().min()) {
             sendHelpScreen(info, "Too few arguments.");
             return;
@@ -96,6 +100,14 @@ public class DefaultHandler implements Handler {
                     sendHelpScreen(info, "Unknown flag: " + flag);
                     return;
                 }
+            }
+        }
+
+        if (ch.strictArgs() && info.getArgsLength() > 0) {
+            final String arg0 = info.getArgs().get(0);
+            if (!CommandInfo.isValidFlag(arg0)) {
+                sendHelpScreen(info, "Unknown subcommand: " + arg0);
+                return;
             }
         }
 

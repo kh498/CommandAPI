@@ -101,4 +101,13 @@ public @interface CommandHandler {
      * The flag can only be any english character (a-z and A-Z) including * as a catch all.
      */
     String flags() default "";
+
+    /**
+     * Defines if there can be arbitrary variables. If set to true the command cannot have any unknown variables.
+     * The arguments will either be a subcommand or a flag, if not an error is thrown. This means that flags are
+     * ignored and can be used.
+     * <p>
+     * It is suggested that this is set to true if you only want flags as args.
+     */
+    boolean strictArgs() default false;
 }
