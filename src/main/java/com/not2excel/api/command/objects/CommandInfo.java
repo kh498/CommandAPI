@@ -217,11 +217,39 @@ public class CommandInfo {
         return this.playersOnly;
     }
 
+    /**
+     * @return All flags found in the arguments of the command
+     */
     public Set<Character> getFlags() {
         return this.flags;
     }
 
-    public boolean hasFlag(final char c) {
-        return this.hasAsteriskFlag || this.flags.contains(c);
+    /**
+     * @param flag The flag you want to check is present
+     *
+     * @return {@code true} if the flag has been found or {@link #hasAsteriskFlag()} is {@code true}, {@code false} otherwise.
+     */
+    public boolean hasFlag(final char flag) {
+        return this.hasAsteriskFlag || this.flags.contains(flag);
+    }
+
+    public boolean hasFlags(final String s) {
+        if (this.hasAsteriskFlag) {
+            return true;
+        }
+
+        for (final char c : s.toCharArray()) {
+            if (this.flags.contains(c)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @return if true then all flags should be seen as present
+     */
+    public boolean hasAsteriskFlag() {
+        return this.hasAsteriskFlag;
     }
 }

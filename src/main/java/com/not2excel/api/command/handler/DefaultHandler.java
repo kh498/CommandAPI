@@ -108,7 +108,7 @@ public class DefaultHandler implements Handler {
             info.getSender().sendMessage("<red>This command can only be executed in game.");
             return;
         }
-        if (!info.hasFlag('*')) {
+        if (!info.hasAsteriskFlag()) {
             for (final char flag : info.getFlags()) {
                 if (!ch.flags().contains(String.valueOf(flag))) {
                     Colorizer.send(info.getSender(), "Unknown flag: " + flag);
