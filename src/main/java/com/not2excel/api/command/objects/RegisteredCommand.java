@@ -36,19 +36,9 @@ public class RegisteredCommand extends ParentCommand implements CommandExecutor,
                                                      String prefix) {
         for (final Entry<String, ChildCommand> entry : parentCommand.getChildCommands().entrySet()) {
             final String description = entry.getValue().getDescription();
-            final String flags = entry.getValue().getFlags();
+            final String flags = entry.getValue().getDisplayFlags();
 
-            /* generate flags display TODO cache this? */
-            String finalFlags = "";
-            if (!flags.isEmpty()) {
-                final StringBuilder flagsBuilder = new StringBuilder();
-                for (final char c : flags.toCharArray()) {
-                    flagsBuilder.append('-').append(c).append(' ');
-                }
-                finalFlags = flagsBuilder.toString();
-            }
-
-            Colorizer.send(sender, "<yellow>/%s %s <gold>%s<gray>%s", prefix, entry.getKey(), finalFlags, description);
+            Colorizer.send(sender, "<yellow>/%s %s %s<gray>%s", prefix, entry.getKey(), flags, description);
             if (!entry.getValue().getChildCommands().isEmpty()) {
                 prefix += " " + entry.getKey();
                 recursivelyDisplayChildUsage(sender, entry.getValue(), prefix);

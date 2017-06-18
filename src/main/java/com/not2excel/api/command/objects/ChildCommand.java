@@ -19,6 +19,7 @@ public class ChildCommand extends ParentCommand {
     protected String permission = "";
     protected String flags = "";
     private Handler handler;
+    private String displayFlag = "";
 
     public ChildCommand(final CommandHandler commandHandler) {
         this.commandHandler = commandHandler;
@@ -89,4 +90,16 @@ public class ChildCommand extends ParentCommand {
             return this.commandHandler.flags();
         }
     }
+
+    String getDisplayFlags() {
+        if (this.displayFlag.isEmpty() && !getFlags().isEmpty()) {
+            final StringBuilder flagsBuilder = new StringBuilder("<gold>");
+            for (final char c : this.getFlags().toCharArray()) {
+                flagsBuilder.append('-').append(c).append(' ');
+            }
+            this.displayFlag = flagsBuilder.toString();
+        }
+        return this.displayFlag;
+    }
+
 }
