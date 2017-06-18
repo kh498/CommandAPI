@@ -23,6 +23,7 @@ public class ChildCommand extends ParentCommand {
     private String displayFlag = "";
 
     public ChildCommand(final CommandHandler commandHandler, final boolean isAlias) {
+        setParentAsChild(this);
         this.commandHandler = commandHandler;
         this.isAlias = isAlias;
     }

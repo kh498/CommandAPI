@@ -11,6 +11,8 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class ParentCommand {
     private final Map<String, ChildCommand> childCommands = new ConcurrentHashMap<>();
+    private ChildCommand parentAsChild;
+
 
     /**
      * @param subCommand The subcommand to be added
@@ -51,5 +53,17 @@ public class ParentCommand {
      */
     public Map<String, ChildCommand> getChildCommands() {
         return this.childCommands;
+    }
+
+
+    public ChildCommand getParentAsChild() {
+        return this.parentAsChild;
+    }
+
+    void setParentAsChild(final ChildCommand parentAsChild) {
+        if (this.parentAsChild != null) {
+            throw new IllegalArgumentException("the child has already been set!");
+        }
+        this.parentAsChild = parentAsChild;
     }
 }

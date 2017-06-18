@@ -29,6 +29,7 @@ public class CommandInfo {
     private final boolean playersOnly;
     private final Set<Character> flags;
     private boolean hasAsteriskFlag;
+    private String fullUsage;
 
     private static final Pattern FLAG = Pattern.compile("^-[a-zA-Z*]$");
 
@@ -129,7 +130,21 @@ public class CommandInfo {
         if (this.commandHandler == null) {
             return this.usage;
         }
-        return this.commandHandler.usage();
+        else if (this.fullUsage == null) {
+            final String baseCmd = this.commandHandler.command().replaceAll("\\.", " ");
+
+            final StringBuilder usage = new StringBuilder('/' + baseCmd);
+            final ChildCommand parentAsChild = this.parentCommand.getParentAsChild();
+            if (parentAsChild != null) {
+                usage.append(' ').append(parentAsChild.getDisplayFlags());
+            }
+            if (!"".equals(this.commandHandler.usage())) {
+                usage.append(this.commandHandler.usage());
+            }
+            this.fullUsage = usage.toString();
+        }
+        return this.fullUsage;
+
     }
 
     public String getDescription() {

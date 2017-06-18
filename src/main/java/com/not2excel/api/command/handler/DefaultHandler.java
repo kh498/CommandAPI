@@ -39,20 +39,19 @@ public class DefaultHandler implements Handler {
                 }
             }
             else {
-                info.getRegisteredCommand()
-                    .displayDefaultUsage(info.getSender(), command, info.getParentCommand(), null);
+                info.getRegisteredCommand().displayDefaultUsage(info);
             }
         }
         else if (strings.size() > 0) {
             if ("help".equalsIgnoreCase(strings.get(0)) && !parentCommand.getChildCommands().containsKey("help")) {
                 final CommandHandler ch = this.queue.getMethod().getAnnotation(CommandHandler.class);
                 if ("".equals(info.getUsage())) {
-                    info.getRegisteredCommand()
-                        .displayDefaultUsage(info.getSender(), command, info.getParentCommand(), ch.command());
                 }
                 else {
                     info.getSender().sendMessage(info.getUsage());
                 }
+//                final CommandHandler ch = this.queue.getMethod().getAnnotation(CommandHandler.class);
+                info.getRegisteredCommand().displayDefaultUsage(info);
                 return;
             }
             final ChildCommand child = parentCommand.getChildCommands().get(strings.get(0));
@@ -126,10 +125,8 @@ public class DefaultHandler implements Handler {
         }
     }
 
-    private void sendHelpScreen(final CommandInfo info, final String errorMsg) {
+    private static void sendHelpScreen(final CommandInfo info, final String errorMsg) {
         Colorizer.send(info.getSender(), "<red>" + errorMsg);
-        info.getRegisteredCommand().displayDefaultUsage(info.getSender(), info.getCommand(), info.getParentCommand(),
-                                                        this.queue.getMethod().getAnnotation(CommandHandler.class)
-                                                                  .command());
+        info.getRegisteredCommand().displayDefaultUsage(info);
     }
 }

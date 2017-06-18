@@ -103,18 +103,19 @@ public class RegisteredCommand extends ParentCommand implements CommandExecutor,
             e.printStackTrace();
         }
     }
-    public void displayDefaultUsage(final CommandSender sender, final String command, final ParentCommand parentCommand,
-                                    final String rawCommand) {
-        final String prefix;
-        final String baseCmd = rawCommand != null ? rawCommand.replaceAll("\\.", " ") : "UNKNOWN";
 
-        final String usage = "".equals(getCommandHandler().usage()) ? "/" + baseCmd : getCommandHandler().usage();
-        Colorizer.send(sender, "<red>Usage: %s", usage);
+    public void displayDefaultUsage(final CommandInfo info) {
+        final CommandSender sender = info.getSender();
+        final String command = info.getCommand();
+        final ParentCommand parentCommand = info.getParentCommand();
+        final String prefix;
+
+        Colorizer.send(sender, "<red>Usage: %s", info.getUsage());
         if (command.equals(getCommand())) {
             prefix = command;
         }
         else {
-
+            final String baseCmd = info.getCommandHandler().command().replaceAll("\\.", " ");
             final StringBuilder builder = new StringBuilder(baseCmd);
             prefix = recursivelyAddToPrefix(builder, command, parentCommand.getChildCommands()).toString();
         }
