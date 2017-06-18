@@ -86,18 +86,12 @@ public class DefaultHandler implements Handler {
         final CommandHandler ch = this.queue.getMethod().getAnnotation(CommandHandler.class);
 
         if (info.getArgsLength() < info.getCommandHandler().min()) {
-            Colorizer.send(info.getSender(), "<red>Too few arguments.");
-            info.getRegisteredCommand()
-                .displayDefaultUsage(info.getSender(), info.getCommand(), info.getParentCommand(), ch.command());
+            sendHelpScreen(info, "Too few arguments.");
             return;
-//            throw new CommandException("Too few arguments.");
         }
         if (info.getCommandHandler().max() != -1 && info.getArgsLength() > info.getCommandHandler().max()) {
-            Colorizer.send(info.getSender(), "<red>Too many arguments.");
-            info.getRegisteredCommand()
-                .displayDefaultUsage(info.getSender(), info.getCommand(), info.getParentCommand(), ch.command());
+            sendHelpScreen(info, "Too many arguments.");
             return;
-//            throw new CommandException("Too many arguments.");
         }
         if (!info.getSender().hasPermission(info.getCommandHandler().permission())) {
             Colorizer.send(info.getSender(), "<red>" + info.getCommandHandler().noPermission());
@@ -111,10 +105,7 @@ public class DefaultHandler implements Handler {
         if (!info.hasAsteriskFlag()) {
             for (final char flag : info.getFlags()) {
                 if (!ch.flags().contains(String.valueOf(flag))) {
-                    Colorizer.send(info.getSender(), "Unknown flag: " + flag);
-                    info.getRegisteredCommand()
-                        .displayDefaultUsage(info.getSender(), info.getCommand(), info.getParentCommand(),
-                                             ch.command());
+                    sendHelpScreen(info, "Unknown flag: " + flag);
                     return;
                 }
             }
@@ -125,5 +116,12 @@ public class DefaultHandler implements Handler {
         } catch (final IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
+    }
+
+    private void sendHelpScreen(final CommandInfo info, final String errorMsg) {
+        Colorizer.send(info.getSender(), "<red>" + errorMsg);
+        info.getRegisteredCommand().displayDefaultUsage(info.getSender(), info.getCommand(), info.getParentCommand(),
+                                                        this.queue.getMethod().getAnnotation(CommandHandler.class)
+                                                                  .command());
     }
 }
