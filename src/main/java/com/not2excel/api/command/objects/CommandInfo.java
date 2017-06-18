@@ -45,6 +45,9 @@ public class CommandInfo {
         this.permission = permission;
         this.playersOnly = commandHandler.playerOnly();
 
+        if (FLAG.matcher(command).matches()) {
+            throw new IllegalArgumentException("A sub command cannot be a valid flag!");
+        }
 
         this.flags = new HashSet<>();
         /*
