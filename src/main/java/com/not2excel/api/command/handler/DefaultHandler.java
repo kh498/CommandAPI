@@ -26,35 +26,24 @@ public class DefaultHandler implements Handler {
 
     @Override
     public void handleCommand(final CommandInfo info) throws CommandException {
-        final List<String> strings = info.getArgs();
+        final List<String> args = info.getArgs();
         final ParentCommand parentCommand = info.getParentCommand();
-        final String command = info.getCommand();
-
-        if (strings.size() == 0 || parentCommand.getChildCommands().size() == 0) {
+        if (args.size() == 0 || parentCommand.getChildCommands().size() == 0) {
             if (this.queue != null) {
-                try {
-                    sendCommand(info);
-                } catch (final CommandException e) {
-                    e.printStackTrace();
-                }
+                sendCommand(info);
             }
             else {
                 info.getRegisteredCommand().displayDefaultUsage(info);
             }
         }
-        else if (strings.size() > 0) {
-            if ("help".equalsIgnoreCase(strings.get(0)) && !parentCommand.getChildCommands().containsKey("help")) {
-                final CommandHandler ch = this.queue.getMethod().getAnnotation(CommandHandler.class);
-                if ("".equals(info.getUsage())) {
-                }
-                else {
-                    info.getSender().sendMessage(info.getUsage());
-                }
+        else if (args.size() > 0) {
+            if (("help".equalsIgnoreCase(args.get(0)) && !parentCommand.getChildCommands().containsKey("help")) ||
+                ("?".equalsIgnoreCase(args.get(0)) && !parentCommand.getChildCommands().containsKey("?"))) {
 //                final CommandHandler ch = this.queue.getMethod().getAnnotation(CommandHandler.class);
                 info.getRegisteredCommand().displayDefaultUsage(info);
                 return;
             }
-            final ChildCommand child = parentCommand.getChildCommands().get(strings.get(0));
+            final ChildCommand child = parentCommand.getChildCommands().get(args.get(0));
             if (child == null) {
                 //needed to send parent command instead of throwing errors so that parent command can process args
                 try {
@@ -70,8 +59,7 @@ public class DefaultHandler implements Handler {
             }
             final CommandInfo cmdInfo =
                 new CommandInfo(info.getRegisteredCommand(), child, child.getCommandHandler(), info.getSender(),
-                                strings.get(0),
-                                strings.size() == 1 ? Collections.emptyList() : strings.subList(1, strings.size()),
+                                args.get(0), args.size() == 1 ? Collections.emptyList() : args.subList(1, args.size()),
                                 info.getUsage(), info.getPermission());
             try {
                 child.getHandler().handleCommand(cmdInfo);
