@@ -98,7 +98,7 @@ public @interface CommandHandler {
      * alter the behaviour of the command. Each character in this string will be counted as a valid flag: extra flags
      * will be discarded.
      * <p>
-     * The flag can only be any english character (a-z and A-Z) including * as a catch all.
+     * Flags can only be any english character (a-z and A-Z) including * as a catch all.
      */
     String flags() default "";
 
