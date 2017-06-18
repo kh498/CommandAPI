@@ -102,6 +102,12 @@ public class DefaultHandler implements Handler {
             info.getSender().sendMessage("<red>This command can only be executed in game.");
             return;
         }
+
+        final String arg0 = info.getArgs().get(0);
+        if (!info.getParentCommand().hasChild(arg0) && !CommandInfo.isValidFlag(arg0)) {
+            sendHelpScreen(info, "Unknown subcommand: " + info.getArgs().get(0));
+            return;
+        }
         if (!info.hasAsteriskFlag()) {
             for (final char flag : info.getFlags()) {
                 if (!ch.flags().contains(String.valueOf(flag))) {
