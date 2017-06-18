@@ -6,7 +6,7 @@ import com.not2excel.api.command.handler.Handler;
 import org.bukkit.command.CommandSender;
 
 /**
- * @author Richmond Steele
+ * @author Richmond Steele, kh498
  * @since 12/17/13
  * All rights Reserved
  * Please read included LICENSE file
@@ -17,6 +17,7 @@ public class ChildCommand extends ParentCommand {
     protected String usage = "";
     protected String description = "";
     protected String permission = "";
+    protected String flags = "";
     private Handler handler;
 
     public ChildCommand(final CommandHandler commandHandler) {
@@ -77,6 +78,15 @@ public class ChildCommand extends ParentCommand {
         else {
             final String[] list = this.commandHandler.command().split("\\.");
             return list[list.length - 1 <= 0 ? 0 : list.length - 1];
+        }
+    }
+
+    public String getFlags() {
+        if (this.commandHandler == null) {
+            return this.flags;
+        }
+        else {
+            return this.commandHandler.flags();
         }
     }
 }
