@@ -48,11 +48,17 @@ public @interface CommandHandler {
     String noPermission() default "You don't have permission to do that.";
 
     /**
-     * Usage for the command
-     * /test
-     * /test set [player]
+     * Given the command {@code test.set}
+     * <p>
+     * The default usage will give the result:
+     * <p>
+     * {@code Usage: /test set}
+     * <p>
+     * With the usage {@code [player]} it will display:
+     * <p>
+     * {@code Usage: /test set [player]}
      *
-     * @return command usage
+     * @return The arbitrary arguments of the command
      */
     String usage() default "";
 

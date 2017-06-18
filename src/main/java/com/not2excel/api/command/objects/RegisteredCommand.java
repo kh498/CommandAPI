@@ -82,6 +82,7 @@ public class RegisteredCommand extends ParentCommand implements CommandExecutor,
         }
         return strings;
     }
+
     @Override
     public boolean onCommand(final CommandSender sender, final Command command, final String s, final String[] args) {
         try {
@@ -95,6 +96,7 @@ public class RegisteredCommand extends ParentCommand implements CommandExecutor,
         }
         return true;
     }
+
     @Override
     public void handleCommand(final CommandInfo info) throws CommandException {
         try {
