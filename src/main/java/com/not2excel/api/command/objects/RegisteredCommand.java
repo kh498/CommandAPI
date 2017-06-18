@@ -100,7 +100,7 @@ public class RegisteredCommand extends ParentCommand implements CommandExecutor,
     public void displayDefaultUsage(final CommandSender sender, final String command, final ParentCommand parentCommand,
                                     final String rawCommand) {
         final String prefix;
-        final String baseCmd = rawCommand.replaceAll("\\.", " ");
+        final String baseCmd = rawCommand != null ? rawCommand.replaceAll("\\.", " ") : "UNKNOWN";
 
         final String usage = "".equals(getCommandHandler().usage()) ? "/" + baseCmd : getCommandHandler().usage();
         Colorizer.send(sender, "<red>Usage: %s", usage);
