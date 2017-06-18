@@ -90,7 +90,9 @@ public @interface CommandHandler {
     /**
      * Defines the flags available for this command. A flag is a single character such as {@code -f} that will
      * alter the behaviour of the command. Each character in this string will be counted as a valid flag: extra flags
-     * will be discarded. Accepts * as a catch all.
+     * will be discarded.
+     * <p>
+     * The flag can only be any english character (a-z and A-Z) including * as a catch all.
      */
     String flags() default "";
 }

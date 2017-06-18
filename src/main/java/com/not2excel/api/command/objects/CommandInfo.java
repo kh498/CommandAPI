@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
  * All rights Reserved
  * Please read included LICENSE file
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "SameParameterValue", "WeakerAccess"})
 public class CommandInfo {
     private final RegisteredCommand registeredCommand;
     private final ParentCommand parentCommand;
@@ -81,6 +81,9 @@ public class CommandInfo {
         return this.sender;
     }
 
+    /**
+     * @return The player who executed the command or {@code null} if console
+     */
     public Player getPlayer() {
         if (isPlayer()) {
             return (Player) this.sender;
@@ -136,6 +139,13 @@ public class CommandInfo {
         return this.commandHandler.description();
     }
 
+    /**
+     * @param index The argument you want
+     *
+     * @return the argument at {@code index}
+     *
+     * @throws CommandException if {@code index} is greater than the size of arguments
+     */
     public String getIndex(final int index) throws CommandException {
         if (index > this.args.size()) {
             throw new CommandException(this.sender, "<red>Invalid index number");
@@ -150,6 +160,15 @@ public class CommandInfo {
         return this.args.get(index);
     }
 
+    /**
+     * Try and parse an argument as an integer
+     *
+     * @param index The argument you want
+     *
+     * @return the argument at {@code index} as int
+     *
+     * @throws CommandException if {@code index} is invalid or the argument is not an integer
+     */
     public int getInt(final int index) throws CommandException {
         if (index > this.args.size()) {
             throw new CommandException(this.sender, "<red>Invalid index number");
@@ -163,6 +182,15 @@ public class CommandInfo {
         return returnValue;
     }
 
+    /**
+     * Try and parse an argument as an integer
+     *
+     * @param index        The argument you want
+     * @param defaultValue if a {@code CommandException} happens return this value
+     *
+     * @return the argument at {@code index} as int or {@code defaultValue} if a
+     * a {@code CommandException} is encountered
+     */
     public int getInt(final int index, final int defaultValue) {
         if (index > this.args.size()) {
             return defaultValue;
@@ -174,6 +202,15 @@ public class CommandInfo {
         }
     }
 
+    /**
+     * Try and parse an argument as an double
+     *
+     * @param index The argument you want
+     *
+     * @return the argument at {@code index} as double
+     *
+     * @throws CommandException if {@code index} is invalid or the argument is not an double
+     */
     public double getDouble(final int index) throws CommandException {
         if (index > this.args.size()) {
             throw new CommandException(this.sender, "<red>Invalid index number");
@@ -187,6 +224,15 @@ public class CommandInfo {
         return returnValue;
     }
 
+    /**
+     * Try and parse an argument as an double
+     *
+     * @param index        The argument you want
+     * @param defaultValue if a {@code CommandException} happens return this value
+     *
+     * @return the argument at {@code index} as double or {@code defaultValue} if a
+     * a {@code CommandException} is encountered
+     */
     public double getDouble(final int index, final double defaultValue) {
         if (index > this.args.size()) {
             return defaultValue;
@@ -233,7 +279,12 @@ public class CommandInfo {
         return this.hasAsteriskFlag || this.flags.contains(flag);
     }
 
-    public boolean hasFlags(final String s) {
+    /**
+     * @param s A string containing the flags to check
+     *
+     * @return true if one of the chars in the string matches the flag in the present command
+     */
+    public boolean hasOneOfFlags(final String s) {
         if (this.hasAsteriskFlag) {
             return true;
         }
