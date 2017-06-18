@@ -11,7 +11,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 /**
- * @author Richmond Steele
+ * @author Richmond Steele, kh498
  * @since 12/17/13
  * All rights Reserved
  * Please read included LICENSE file

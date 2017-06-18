@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 /**
- * @author Richmond Steele
+ * @author Richmond Steele, kh498
  * @since 12/17/13
  * All rights Reserved
  * Please read included LICENSE file

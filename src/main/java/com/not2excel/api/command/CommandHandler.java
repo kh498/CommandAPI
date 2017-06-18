@@ -6,7 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * @author Richmond Steele, William Reed
+ * @author Richmond Steele, William Reed, kh498
  * @since 12/16/13
  * All rights Reserved
  * Please read included LICENSE file

@@ -12,7 +12,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * @author Richmond Steele, William Reed
+ * @author Richmond Steele, William Reed, kh498
  * @since 12/18/13
  * All rights Reserved
  * Please read included LICENSE file

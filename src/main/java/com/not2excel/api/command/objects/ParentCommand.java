@@ -12,27 +12,43 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ParentCommand {
     private final Map<String, ChildCommand> childCommands = new ConcurrentHashMap<>();
 
-    public void addChild(final String s, final ChildCommand child) {
+    /**
+     * @param subCommand The subcommand to be added
+     * @param child      The child of this parent
+     */
+    public void addChild(final String subCommand, final ChildCommand child) {
         {
             synchronized (this.childCommands) {
-                this.childCommands.put(s.toLowerCase(), child);
+                this.childCommands.put(subCommand.toLowerCase(), child);
             }
         }
     }
 
-    public boolean hasChild(final String s) {
+    /**
+     * @param childStr key whose presence in this map is to be tested, case insensitive
+     *
+     * @return true if this map contains a mapping for the specified child
+     */
+    public boolean hasChild(final String childStr) {
         synchronized (this.childCommands) {
-            return this.childCommands.containsKey(s.toLowerCase());
-
+            return this.childCommands.containsKey(childStr.toLowerCase());
         }
     }
 
-    public ChildCommand getChild(final String s) {
+    /**
+     * @param childStr the child whose associated value is to be returned, case insensitive
+     *
+     * @return the value to which the specified key is mapped, or null if this map contains no mapping for the child
+     */
+    public ChildCommand getChild(final String childStr) {
         synchronized (this.childCommands) {
-            return this.childCommands.get(s.toLowerCase());
+            return this.childCommands.get(childStr.toLowerCase());
         }
     }
 
+    /**
+     * @return This parents child commands, the key is the subCommand and the value is the ChildCommand object
+     */
     public Map<String, ChildCommand> getChildCommands() {
         return this.childCommands;
     }
