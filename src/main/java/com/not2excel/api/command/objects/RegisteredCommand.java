@@ -41,7 +41,6 @@ public class RegisteredCommand extends ParentCommand implements CommandExecutor,
                 final String flags = childCommand.getDisplayFlags();
 
                 Colorizer.send(sender, "<yellow>/%s %s %s<gray>%s", prefix, entry.getKey(), flags, description);
-                System.out.println("childCmd: " + childCommand);
                 if (!childCommand.getChildCommands().isEmpty()) {
                     prefix += " " + entry.getKey();
                     recursivelyDisplayChildUsage(sender, childCommand, prefix);
