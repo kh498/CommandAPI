@@ -103,12 +103,14 @@ public class DefaultHandler implements Handler {
             }
         }
 
-        if (ch.strictArgs() && info.getArgsLength() > 0) {
-            final String arg0 = info.getArgs().get(0);
-            if (!CommandInfo.isValidFlag(arg0)) {
-                sendHelpScreen(info, "Unknown subcommand: " + arg0);
-                return;
+        if (ch.strictArgs()) {
+            for (final String arg : info.getArgs()) {
+                if (!CommandInfo.isValidFlag(arg)) {
+                    sendHelpScreen(info, "Unknown subcommand: " + arg);
+                    return;
+                }
             }
+
         }
 
         try {
