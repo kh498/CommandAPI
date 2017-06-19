@@ -3,6 +3,7 @@ package com.not2excel.api.command.objects;
 import com.not2excel.api.command.CommandHandler;
 import com.not2excel.api.command.handler.ErrorHandler;
 import com.not2excel.api.command.handler.Handler;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 /**
@@ -23,6 +24,7 @@ public class ChildCommand extends ParentCommand {
     private String displayFlag = "";
     private final String[] flagDesc = {};
     private String displayFlagDesc = "";
+    private String fullUsage;
 
     public ChildCommand(final CommandHandler commandHandler, final boolean isAlias) {
         setParentAsChild(this);
@@ -130,6 +132,21 @@ public class ChildCommand extends ParentCommand {
             this.displayFlagDesc = flagsDescBuilder.toString();
         }
         return this.displayFlagDesc;
+    }
+
+    public String getLightExplainedUsage() {
+        if (this.fullUsage == null) {
+            final String baseCmd = this.commandHandler.command().replaceAll("\\.", " ");
+
+            final StringBuilder usage = new StringBuilder('/' + baseCmd);
+            if (!"".equals(this.commandHandler.usage())) {
+                usage.append(' ').append(this.commandHandler.usage());
+            }
+            usage.append(' ').append(getDisplayFlags());
+
+            this.fullUsage = usage.toString();
+        }
+        return this.fullUsage;
     }
 
     public boolean isAlias() {
