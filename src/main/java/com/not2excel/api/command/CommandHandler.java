@@ -110,4 +110,9 @@ public @interface CommandHandler {
      * It is suggested that this is set to true if you only want flags as args.
      */
     boolean strictArgs() default false;
+
+    /**
+     * Describes in detail what each flag does. Use one string per flag.
+     */
+    String[] flagDesc() default {};
 }

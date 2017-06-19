@@ -32,8 +32,10 @@ public class RegisteredCommand extends ParentCommand implements CommandExecutor,
         this.queuedCommand = queuedCommand;
         this.handler = new DefaultHandler(queuedCommand);
     }
+
     private static void recursivelyDisplayChildUsage(final CommandSender sender, final ParentCommand parentCommand,
                                                      String prefix) {
+        //TODO Display aliases
         for (final Entry<String, ChildCommand> entry : parentCommand.getChildCommands().entrySet()) {
             final ChildCommand childCommand = entry.getValue();
             if (!childCommand.isAlias()) {

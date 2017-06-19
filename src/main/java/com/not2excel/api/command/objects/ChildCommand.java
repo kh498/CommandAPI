@@ -21,6 +21,8 @@ public class ChildCommand extends ParentCommand {
     protected String flags = "";
     private Handler handler;
     private String displayFlag = "";
+    private final String[] flagDesc = {};
+    private String displayFlagDesc = "";
 
     public ChildCommand(final CommandHandler commandHandler, final boolean isAlias) {
         setParentAsChild(this);
@@ -94,6 +96,15 @@ public class ChildCommand extends ParentCommand {
         }
     }
 
+    public String[] getFlagsDesc() {
+        if (this.commandHandler == null) {
+            return this.flagDesc;
+        }
+        else {
+            return this.commandHandler.flagDesc();
+        }
+    }
+
     String getDisplayFlags() {
         if (this.displayFlag.isEmpty() && !getFlags().isEmpty()) {
             final StringBuilder flagsBuilder = new StringBuilder("<gold>");
@@ -103,6 +114,22 @@ public class ChildCommand extends ParentCommand {
             this.displayFlag = flagsBuilder.toString();
         }
         return this.displayFlag;
+    }
+
+    String getDisplayFlagDesc() {
+        final int length = getFlagsDesc().length;
+        if (!getFlags().isEmpty() && length != 0) {
+            final StringBuilder flagsDescBuilder = new StringBuilder("<gray>\n");
+
+            for (int i = 0; i < length; i++) {
+                flagsDescBuilder.append("     ").append(getFlagsDesc()[i]);
+                if (i + 1 < length) {
+                    flagsDescBuilder.append("\n");
+                }
+            }
+            this.displayFlagDesc = flagsDescBuilder.toString();
+        }
+        return this.displayFlagDesc;
     }
 
     public boolean isAlias() {

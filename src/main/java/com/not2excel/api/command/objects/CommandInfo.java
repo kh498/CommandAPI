@@ -135,16 +135,16 @@ public class CommandInfo {
 
             final StringBuilder usage = new StringBuilder('/' + baseCmd);
             final ChildCommand parentAsChild = this.parentCommand.getParentAsChild();
-            if (parentAsChild != null) {
-                usage.append(' ').append(parentAsChild.getDisplayFlags());
-            }
             if (!"".equals(this.commandHandler.usage())) {
                 usage.append(this.commandHandler.usage());
+            }
+            if (parentAsChild != null) {
+                usage.append(' ').append(parentAsChild.getDisplayFlags());
+                usage.append(parentAsChild.getDisplayFlagDesc());
             }
             this.fullUsage = usage.toString();
         }
         return this.fullUsage;
-
     }
 
     public String getDescription() {
