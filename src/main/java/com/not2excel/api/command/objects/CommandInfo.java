@@ -131,13 +131,17 @@ public class CommandInfo {
         if (this.commandHandler == null) {
             return this.usage;
         }
-        else if (this.fullUsage == null) {
+        return this.commandHandler.usage();
+    }
+
+    public String getExplainedUsage() {
+        if (this.fullUsage == null) {
             final String baseCmd = this.commandHandler.command().replaceAll("\\.", " ");
 
             final StringBuilder usage = new StringBuilder('/' + baseCmd);
             final ChildCommand parentAsChild = this.parentCommand.getParentAsChild();
             if (!"".equals(this.commandHandler.usage())) {
-                usage.append(this.commandHandler.usage());
+                usage.append(' ').append(this.commandHandler.usage());
             }
             if (parentAsChild != null) {
                 usage.append(' ').append(parentAsChild.getDisplayFlags());
