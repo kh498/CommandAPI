@@ -13,6 +13,7 @@ commandManager.registerHelp(); //registers a generated helptopic to bukkit
 ```
 
 Example commands to be registered: Here are some test commands to display how commands should be written to allow registration.  CommandListener is a required interface for any class you wish commands to be registered from.  This is to allow shrinkage of classes searched for commands, and increase registration time.
+A real example can be found [here](https://gist.github.com/kh498/45af9f07ec6884c259a84687c788786a)
 ```java
 public class TestCommand implements CommandListener //CommandListener is required
 {
@@ -51,10 +52,11 @@ public class TestCommand implements CommandListener //CommandListener is require
          The arguments will either be a subcommand or a flag, if not an error is thrown. This means that flags are
          ignored and can be used.
      
-         It is suggested that this is set to true if you only want flags as args.
+         It is suggested that this is set to true if you only want flags as arguments.
          */
         @CommandHandler(command = "test.reset",
                         flags = "kr",
+                        flagDesc = {"-k resets kingdoms", "-r resets reficules"},
                         strictArgs = true,
                         description = "resets stuff!")
         public static void testingCommand2(CommandInfo info)
@@ -69,7 +71,6 @@ public class TestCommand implements CommandListener //CommandListener is require
             }
         }
     }
-
 ```
 
 __Finally:__ Please leave any comments, suggestions, and/or bugs you may find while using this CommandAPI.
