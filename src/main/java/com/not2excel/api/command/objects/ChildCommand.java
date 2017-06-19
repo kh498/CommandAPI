@@ -107,7 +107,7 @@ public class ChildCommand extends ParentCommand {
 
     String getDisplayFlags() {
         if (this.displayFlag.isEmpty() && !getFlags().isEmpty()) {
-            final StringBuilder flagsBuilder = new StringBuilder("<gold>");
+            final StringBuilder flagsBuilder = new StringBuilder().append(ChatColor.GOLD);
             for (final char c : this.getFlags().toCharArray()) {
                 flagsBuilder.append('-').append(c).append(' ');
             }
@@ -119,7 +119,7 @@ public class ChildCommand extends ParentCommand {
     String getDisplayFlagDesc() {
         final int length = getFlagsDesc().length;
         if (!getFlags().isEmpty() && length != 0) {
-            final StringBuilder flagsDescBuilder = new StringBuilder("<gray>\n");
+            final StringBuilder flagsDescBuilder = new StringBuilder(ChatColor.GRAY + "\n");
 
             for (int i = 0; i < length; i++) {
                 flagsDescBuilder.append("     ").append(getFlagsDesc()[i]);

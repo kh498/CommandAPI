@@ -5,7 +5,7 @@ import com.not2excel.api.command.objects.ChildCommand;
 import com.not2excel.api.command.objects.CommandInfo;
 import com.not2excel.api.command.objects.ParentCommand;
 import com.not2excel.api.command.objects.QueuedCommand;
-import com.not2excel.api.util.Colorizer;
+import org.bukkit.ChatColor;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
@@ -54,7 +54,7 @@ public class DefaultHandler implements Handler {
                 return;
             }
             if (!child.checkPermission(info.getSender())) {
-                Colorizer.send(info.getSender(), "<red>" + child.getCommandHandler().noPermission());
+                info.getSender().sendMessage(ChatColor.RED + child.getCommandHandler().noPermission());
                 return;
             }
             final CommandInfo cmdInfo =
@@ -64,7 +64,7 @@ public class DefaultHandler implements Handler {
             try {
                 child.getHandler().handleCommand(cmdInfo);
             } catch (final CommandException e) {
-                Colorizer.send(info.getSender(), "<red>Failed to handle command properly.");
+                info.getSender().sendMessage(ChatColor.RED + "Failed to handle command properly.");
             }
         }
     }
@@ -85,12 +85,12 @@ public class DefaultHandler implements Handler {
             return;
         }
         if (!info.getSender().hasPermission(info.getCommandHandler().permission())) {
-            Colorizer.send(info.getSender(), "<red>" + info.getCommandHandler().noPermission());
+            info.getSender().sendMessage(ChatColor.RED + info.getCommandHandler().noPermission());
             return;
         }
         if (info.playersOnly() && !info.isPlayer()) {
             //maybe make this configurable some how
-            info.getSender().sendMessage("<red>This command can only be executed in game.");
+            info.getSender().sendMessage(ChatColor.RED + "This command can only be executed in game.");
             return;
         }
 
@@ -121,7 +121,7 @@ public class DefaultHandler implements Handler {
     }
 
     private static void sendHelpScreen(final CommandInfo info, final String errorMsg) {
-        Colorizer.send(info.getSender(), "<red>" + errorMsg);
+        info.getSender().sendMessage(ChatColor.RED + errorMsg);
         info.getRegisteredCommand().displayDefaultUsage(info);
     }
 }

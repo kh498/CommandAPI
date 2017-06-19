@@ -1,6 +1,5 @@
 package com.not2excel.api.command.handler;
 
-import com.not2excel.api.util.Colorizer;
 import org.bukkit.command.CommandSender;
 
 /**
@@ -19,11 +18,11 @@ public class CommandException extends Exception {
 
     public CommandException(final CommandSender sender, final String s) {
         super(s);
-        Colorizer.send(sender, s);
+        sender.sendMessage(s);
     }
 
     public CommandException(final CommandSender sender, final String s, final Object... objects) {
         super(s);
-        Colorizer.send(sender, s, objects);
+        sender.sendMessage(String.format(s, objects));
     }
 }

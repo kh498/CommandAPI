@@ -2,6 +2,7 @@ package com.not2excel.api.command.objects;
 
 import com.not2excel.api.command.CommandHandler;
 import com.not2excel.api.command.handler.CommandException;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -163,7 +164,7 @@ public class CommandInfo {
      */
     public String getIndex(final int index) throws CommandException {
         if (index > this.args.size()) {
-            throw new CommandException(this.sender, "<red>Invalid index number");
+            throw new CommandException(this.sender, ChatColor.RED + "Invalid index number");
         }
         return this.args.get(index);
     }
@@ -186,13 +187,14 @@ public class CommandInfo {
      */
     public int getInt(final int index) throws CommandException {
         if (index > this.args.size()) {
-            throw new CommandException(this.sender, "<red>Invalid index number");
+            throw new CommandException(this.sender, ChatColor.RED + "Invalid index number");
         }
         final int returnValue;
         try {
             returnValue = Integer.parseInt(this.args.get(index));
         } catch (final NumberFormatException e) {
-            throw new CommandException(this.sender, "<red>Index <gold>%d<red> is not an Integer", index);
+            throw new CommandException(this.sender, ChatColor.RED + "Index " + ChatColor.GOLD + "%d" + ChatColor.RED +
+                                                    " is not an Integer", index);
         }
         return returnValue;
     }
@@ -228,13 +230,14 @@ public class CommandInfo {
      */
     public double getDouble(final int index) throws CommandException {
         if (index > this.args.size()) {
-            throw new CommandException(this.sender, "<red>Invalid index number");
+            throw new CommandException(this.sender, ChatColor.RED + "Invalid index number");
         }
         final double returnValue;
         try {
             returnValue = Double.parseDouble(this.args.get(index));
         } catch (final NumberFormatException e) {
-            throw new CommandException(this.sender, "<red>Index <gold>%d<red> is not an Double", index);
+            throw new CommandException(this.sender, ChatColor.RED + "Index " + ChatColor.GOLD + "%d" + ChatColor.RED +
+                                                    " is not an Double", index);
         }
         return returnValue;
     }
@@ -261,7 +264,7 @@ public class CommandInfo {
 
     public String joinArgs(final int index) throws CommandException {
         if (index > this.args.size()) {
-            throw new CommandException(this.sender, "<red>Invalid index number");
+            throw new CommandException(this.sender, ChatColor.RED + "Invalid index number");
         }
         final StringBuilder builder = new StringBuilder();
         for (int i = index; i < this.args.size(); ++i) {

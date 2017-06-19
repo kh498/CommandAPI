@@ -1,7 +1,7 @@
 package com.not2excel.api.command.handler;
 
 import com.not2excel.api.command.objects.CommandInfo;
-import com.not2excel.api.util.Colorizer;
+import org.bukkit.ChatColor;
 
 /**
  * @author Richmond Steele
@@ -12,6 +12,6 @@ import com.not2excel.api.util.Colorizer;
 public class ErrorHandler implements Handler {
     @Override
     public void handleCommand(final CommandInfo info) throws CommandException {
-        throw new CommandException(Colorizer.formatColors("<red>Failed to handle command properly."));
+        throw new CommandException(ChatColor.RED + "Failed to handle command properly.");
     }
 }

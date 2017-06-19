@@ -4,7 +4,7 @@ import com.not2excel.api.command.CommandHandler;
 import com.not2excel.api.command.handler.CommandException;
 import com.not2excel.api.command.handler.DefaultHandler;
 import com.not2excel.api.command.handler.Handler;
-import com.not2excel.api.util.Colorizer;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -33,23 +33,23 @@ public class RegisteredCommand extends ParentCommand implements CommandExecutor,
         this.handler = new DefaultHandler(queuedCommand);
     }
 
-    private static void recursivelyDisplayChildUsage(final CommandSender sender, final ParentCommand parentCommand,
-                                                     String prefix) {
+    private static void recursivelyDisplayChildUsage(final CommandInfo info, String prefix) {
         //TODO Display aliases
-        for (final Entry<String, ChildCommand> entry : parentCommand.getChildCommands().entrySet()) {
+        for (final Entry<String, ChildCommand> entry : info.getParentCommand().getChildCommands().entrySet()) {
             final ChildCommand childCommand = entry.getValue();
             if (!childCommand.isAlias()) {
                 final String description = childCommand.getDescription();
-                final String flags = childCommand.getDisplayFlags();
 
-                Colorizer.send(sender, "<yellow>/%s %s %s<gray>%s", prefix, entry.getKey(), flags, description);
+                info.getSender().sendMessage(
+                    ChatColor.YELLOW + childCommand.getLightExplainedUsage() + ChatColor.GRAY + description);
                 if (!childCommand.getChildCommands().isEmpty()) {
                     prefix += " " + entry.getKey();
-                    recursivelyDisplayChildUsage(sender, childCommand, prefix);
+                    recursivelyDisplayChildUsage(info, prefix);
                 }
             }
         }
     }
+
     private static List<String> sortQuotedArgs(final List<String> args) {
         return sortEnclosedArgs(args, '"');
     }
@@ -93,7 +93,7 @@ public class RegisteredCommand extends ParentCommand implements CommandExecutor,
                 new CommandInfo(this, this, commandHandler, sender, s, sortQuotedArgs(strings), commandHandler.usage(),
                                 commandHandler.permission()));
         } catch (final CommandException e) {
-            Colorizer.send(sender, "<red>Failed to handle command properly.");
+            sender.sendMessage(ChatColor.RED + "Failed to handle command properly.");
         }
         return true;
     }
@@ -113,7 +113,7 @@ public class RegisteredCommand extends ParentCommand implements CommandExecutor,
         final ParentCommand parentCommand = info.getParentCommand();
         final String prefix;
 
-        Colorizer.send(sender, "<red>Usage: %s", info.getUsage());
+        sender.sendMessage(ChatColor.RED + "Usage: " + info.getExplainedUsage());
         if (command.equals(getCommand())) {
             prefix = command;
         }
@@ -122,7 +122,7 @@ public class RegisteredCommand extends ParentCommand implements CommandExecutor,
             final StringBuilder builder = new StringBuilder(baseCmd);
             prefix = recursivelyAddToPrefix(builder, command, parentCommand.getChildCommands()).toString();
         }
-        recursivelyDisplayChildUsage(sender, parentCommand, prefix);
+        recursivelyDisplayChildUsage(info, prefix);
     }
     /**
      * recursively create the complete subcommand map of a command
