@@ -33,7 +33,7 @@ public class RegisteredCommand extends ParentCommand implements CommandExecutor,
         this.handler = new DefaultHandler(queuedCommand);
     }
 
-    private static void recursivelyDisplayChildUsage(final CommandInfo info, String prefix) {
+    private static void displayChildUsage(final CommandInfo info, final String prefix) {
         //TODO Display aliases
         for (final Entry<String, ChildCommand> entry : info.getParentCommand().getChildCommands().entrySet()) {
             final ChildCommand childCommand = entry.getValue();
@@ -42,10 +42,10 @@ public class RegisteredCommand extends ParentCommand implements CommandExecutor,
 
                 info.getSender().sendMessage(
                     ChatColor.YELLOW + childCommand.getLightExplainedUsage() + ChatColor.GRAY + description);
-                if (!childCommand.getChildCommands().isEmpty()) {
-                    prefix += " " + entry.getKey();
-                    recursivelyDisplayChildUsage(info, prefix);
-                }
+//                if (!childCommand.getChildCommands().isEmpty()) {
+//                    prefix += " " + entry.getKey();
+//                    displayChildUsage(info, prefix);
+//                }
             }
         }
     }
@@ -118,11 +118,14 @@ public class RegisteredCommand extends ParentCommand implements CommandExecutor,
             prefix = command;
         }
         else {
-            final String baseCmd = info.getCommandHandler().command().replaceAll("\\.", " ");
+            String baseCmd = "";
+            if (info.getCommandHandler() != null) {
+                baseCmd = info.getCommandHandler().command().replaceAll("\\.", " ");
+            }
             final StringBuilder builder = new StringBuilder(baseCmd);
             prefix = recursivelyAddToPrefix(builder, command, parentCommand.getChildCommands()).toString();
         }
-        recursivelyDisplayChildUsage(info, prefix);
+        displayChildUsage(info, prefix);
     }
     /**
      * recursively create the complete subcommand map of a command
