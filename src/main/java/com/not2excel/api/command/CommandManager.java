@@ -35,10 +35,12 @@ public class CommandManager {
     private final LevelLogger logger;
     private CommandMap commandMap;
 
+    private final static boolean DEBUG = false;
+
     public CommandManager(final Plugin plugin) {
         this.plugin = plugin;
         this.logger = LevelLogger.getInstance();
-        this.logger.setLogType("Command");
+        this.logger.setLogType("CommandHandlerAPI");
         this.logger.setTimeStamped(false);
     }
 
@@ -62,6 +64,7 @@ public class CommandManager {
                         "classes that do not use the default constructor.");
         this.logger.log("SOLUTION: Please use the static registrar registerCommands(object) if you need to register " +
                         "commands from classes that do not use the default constructor.");
+
         final Class<?>[] classes = ClassEnumerator.getInstance().getClassesFromThisJar(this.plugin);
         if (classes == null || classes.length == 0) {
             this.logger.log("No classes can be found!");
@@ -72,17 +75,20 @@ public class CommandManager {
                 if (CommandListener.class.isAssignableFrom(c) && !c.isInterface() && !c.isEnum() && !c.isAnnotation()) {
                     if (JavaPlugin.class.isAssignableFrom(c)) {
                         if (this.plugin.getClass().equals(c)) {
-                            this.logger.log("Searching class: " + c.getSimpleName());
+                            if (DEBUG) { this.logger.log("Searching class: " + c.getSimpleName()); }
                             registerCommands(this.plugin);
                         }
                     }
                     else {
-                        this.logger.log("Searching class: " + c.getSimpleName());
+                        if (DEBUG) { this.logger.log("Searching class: " + c.getSimpleName()); }
                         registerCommands(c.newInstance());
                     }
                 }
             } catch (final InstantiationException | IllegalAccessException e) {
-                this.logger.log(LogType.ERROR, c.getSimpleName() + " does not use the default constructor");
+
+                if (DEBUG) {
+                    this.logger.log(LogType.ERROR, c.getSimpleName() + " does not use the default constructor");
+                }
                 e.printStackTrace();
             }
         }
@@ -91,11 +97,13 @@ public class CommandManager {
 
     private void processQueuedCommands() {
         synchronized (this.queuedCommands) {
-            if (!this.queuedCommands.isEmpty()) {
-                this.logger.log("Processing Queued commands.");
-            }
-            else {
-                this.logger.log("There are no Queued commands.");
+            if (DEBUG) {
+                if (!this.queuedCommands.isEmpty()) {
+                    this.logger.log("Processing Queued commands.");
+                }
+                else {
+                    this.logger.log("There are no Queued commands.");
+                }
             }
             int MAX_ITERATION = 0;
             for (final int i : this.queuedCommands.keySet()) {
@@ -114,7 +122,7 @@ public class CommandManager {
                     final RegisteredCommand registered;
                     synchronized (this.registeredCommands) {
                         if (!this.registeredCommands.containsKey(list[0])) {
-                            this.logger.log("Registering Empty Base Command: " + list[0]);
+                            if (DEBUG) { this.logger.log("Registering Empty Base Command: " + list[0]); }
                             final RegisteredCommand registeredEmpty = new RegisteredCommand(null);
                             registeredEmpty.setCommand(list[0]);
                             synchronized (this.registeredCommands) {
@@ -149,7 +157,7 @@ public class CommandManager {
         if (list.length == 2) {
             registered.addChild(s, child);
             registered.getChild(s).setHandler(new DefaultHandler(queue));
-            this.logger.log("Registered queued command: " + commandHandler.command());
+            if (DEBUG) { this.logger.log("Registered queued command: " + commandHandler.command()); }
             return;
         }
 
@@ -163,12 +171,14 @@ public class CommandManager {
                 dummyChild.setPermission(registered.getPermission());
                 registered.addChild(s1.toString(), dummyChild);
                 registered.getChild(s1.toString()).setHandler(new DefaultHandler(null));
-                this.logger.log("Generated and Registered DummyChild: " + s1.substring(0, s1.length() - 1));
+                if (DEBUG) {
+                    this.logger.log("Generated and Registered DummyChild: " + s1.substring(0, s1.length() - 1));
+                }
                 return;
             }
             registered.addChild(s, child);
             registered.getChild(s).setHandler(new DefaultHandler(queue));
-            this.logger.log("Registered queued command: " + commandHandler.command());
+            if (DEBUG) { this.logger.log("Registered queued command: " + commandHandler.command()); }
         }
         else if (parentCommand.getClass().equals(DefaultChildCommand.class)) {
             final DefaultChildCommand defChildCmd = (DefaultChildCommand) parentCommand;
@@ -176,12 +186,14 @@ public class CommandManager {
                 dummyChild.setPermission(defChildCmd.getPermission());
                 defChildCmd.addChild(s1.toString(), dummyChild);
                 defChildCmd.getChild(s1.toString()).setHandler(new DefaultHandler(null));
-                this.logger.log("Generated and Registered DummyChild: " + s1.substring(0, s1.length() - 1));
+                if (DEBUG) {
+                    this.logger.log("Generated and Registered DummyChild: " + s1.substring(0, s1.length() - 1));
+                }
                 return;
             }
             defChildCmd.addChild(s, child);
             defChildCmd.getChild(s).setHandler(new DefaultHandler(queue));
-            this.logger.log("Registered queued command: " + commandHandler.command());
+            if (DEBUG) { this.logger.log("Registered queued command: " + commandHandler.command()); }
         }
         else {
             final ChildCommand childCmd = (ChildCommand) parentCommand;
@@ -189,12 +201,14 @@ public class CommandManager {
                 dummyChild.setPermission(childCmd.getPermission());
                 childCmd.addChild(s1.toString(), dummyChild);
                 childCmd.getChild(s1.toString()).setHandler(new DefaultHandler(null));
-                this.logger.log("Generated and Registered DummyChild: " + s1.substring(0, s1.length() - 1));
+                if (DEBUG) {
+                    this.logger.log("Generated and Registered DummyChild: " + s1.substring(0, s1.length() - 1));
+                }
                 return;
             }
             childCmd.addChild(s, child);
             childCmd.getChild(s).setHandler(new DefaultHandler(queue));
-            this.logger.log("Registered queued command: " + commandHandler.command());
+            if (DEBUG) { this.logger.log("Registered queued command: " + commandHandler.command()); }
         }
 
         registerChild(queue, commandHandler, registered, s, isAlias);
@@ -225,13 +239,13 @@ public class CommandManager {
             return;
         }
         for (final Method method : classObject.getClass().getDeclaredMethods()) {
-            this.logger.log("Testing if method: " + method.getName() + " is a CommandHandler");
+            if (DEBUG) { this.logger.log("Testing if method: " + method.getName() + " is a CommandHandler"); }
             final CommandHandler commandHandler = method.getAnnotation(CommandHandler.class);
             if (commandHandler == null || !method.getParameterTypes()[0].equals(CommandInfo.class)) {
-                this.logger.log(method.getName() + " is not a CommandHandler");
+                if (DEBUG) { this.logger.log(method.getName() + " is not a CommandHandler"); }
                 continue;
             }
-            this.logger.log("Method: " + method.getName() + " is a CommandHandler");
+            if (DEBUG) { this.logger.log("Method: " + method.getName() + " is a CommandHandler"); }
             Object object = classObject;
             if (Modifier.isStatic(method.getModifiers())) {
                 object = null;
@@ -248,7 +262,7 @@ public class CommandManager {
 
     private void registerBaseCommand(final Object classObject, final Method method,
                                      final CommandHandler commandHandler) {
-        this.logger.log("Registering Base Command: " + commandHandler.command());
+        if (DEBUG) { this.logger.log("Registering Base Command: " + commandHandler.command()); }
         final QueuedCommand queue = new QueuedCommand(classObject, method);
         final RegisteredCommand registered = new RegisteredCommand(queue);
         synchronized (this.registeredCommands) {
@@ -265,7 +279,7 @@ public class CommandManager {
     }
 
     private void registerBaseCommand(final AbstractCommand command) {
-        this.logger.log("Registering command: " + command.getName() + " to commandMap.");
+        this.logger.log("Registering command '" + command.getName() + '\'');
         if (getCommandMap().getCommand(command.getName()) == null) {
             getCommandMap().register(this.plugin.getName(), command);
         }
@@ -273,7 +287,7 @@ public class CommandManager {
 
     private void queueCommand(final Object classObject, final Method method, final CommandHandler commandHandler) {
         synchronized (this.queuedCommands) {
-            this.logger.log("Queueing Command: " + commandHandler.command());
+            if (DEBUG) { this.logger.log("Queueing Command: " + commandHandler.command()); }
             final QueuedCommand queue = new QueuedCommand(classObject, method);
             final int numberOfChildren = commandHandler.command().split("\\.").length - 1;
             List<QueuedCommand> queueList = this.queuedCommands.get(numberOfChildren);
