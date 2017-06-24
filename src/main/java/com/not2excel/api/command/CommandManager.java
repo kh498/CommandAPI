@@ -152,22 +152,17 @@ public class CommandManager {
             this.logger.log("Registered queued command: " + commandHandler.command());
             return;
         }
+
+        final List<String> indexer = Arrays.asList(list);
+        final int index = indexer.indexOf(registered.getCommandHandler().command());
+        StringBuilder s1 = new StringBuilder(list[index + 1]);
+        final DefaultChildCommand dummyChild = new DefaultChildCommand(s1.toString());
+
         if (parentCommand.getClass().equals(registered.getClass())) {
             if (!registered.getCommandHandler().command().equals(list[list.length - 2 <= 0 ? 0 : list.length - 2])) {
-                final List<String> indexer = Arrays.asList(list);
-                final int index = indexer.indexOf(registered.getCommandHandler().command());
-                StringBuilder s1 = new StringBuilder(list[index + 1]);
-                final DefaultChildCommand dummyChild = new DefaultChildCommand(s1.toString());
                 dummyChild.setPermission(registered.getPermission());
                 registered.addChild(s1.toString(), dummyChild);
                 registered.getChild(s1.toString()).setHandler(new DefaultHandler(null));
-                registerChild(queue, commandHandler, registered, s, false);
-                s1 = new StringBuilder();
-                for (final String s2 : indexer) {
-                    if (indexer.indexOf(s2) < index + 1) {
-                        s1.append(s2).append(".");
-                    }
-                }
                 this.logger.log("Generated and Registered DummyChild: " + s1.substring(0, s1.length() - 1));
                 return;
             }
@@ -176,52 +171,38 @@ public class CommandManager {
             this.logger.log("Registered queued command: " + commandHandler.command());
         }
         else if (parentCommand.getClass().equals(DefaultChildCommand.class)) {
-            final DefaultChildCommand childParent = (DefaultChildCommand) parentCommand;
-            if (!childParent.getCommand().equals(list[list.length - 2 <= 0 ? 0 : list.length - 2])) {
-                final List<String> indexer = Arrays.asList(list);
-                final int index = indexer.indexOf(registered.getCommandHandler().command());
-                StringBuilder s1 = new StringBuilder(list[index + 1]);
-                final DefaultChildCommand dummyChild = new DefaultChildCommand(s1.toString());
-                dummyChild.setPermission(childParent.getPermission());
-                childParent.addChild(s1.toString(), dummyChild);
-                childParent.getChild(s1.toString()).setHandler(new DefaultHandler(null));
-                registerChild(queue, commandHandler, registered, s, false);
-                s1 = new StringBuilder();
-                for (final String s2 : indexer) {
-                    if (indexer.indexOf(s2) < index + 1) {
-                        s1.append(s2).append(".");
-                    }
-                }
+            final DefaultChildCommand defChildCmd = (DefaultChildCommand) parentCommand;
+            if (!defChildCmd.getCommand().equals(list[list.length - 2 <= 0 ? 0 : list.length - 2])) {
+                dummyChild.setPermission(defChildCmd.getPermission());
+                defChildCmd.addChild(s1.toString(), dummyChild);
+                defChildCmd.getChild(s1.toString()).setHandler(new DefaultHandler(null));
                 this.logger.log("Generated and Registered DummyChild: " + s1.substring(0, s1.length() - 1));
                 return;
             }
-            childParent.addChild(s, child);
-            childParent.getChild(s).setHandler(new DefaultHandler(queue));
+            defChildCmd.addChild(s, child);
+            defChildCmd.getChild(s).setHandler(new DefaultHandler(queue));
             this.logger.log("Registered queued command: " + commandHandler.command());
         }
         else {
-            final ChildCommand childParent = (ChildCommand) parentCommand;
-            if (!childParent.getCommand().equals(list[list.length - 2 <= 0 ? 0 : list.length - 2])) {
-                final List<String> indexer = Arrays.asList(list);
-                final int index = indexer.indexOf(registered.getCommandHandler().command());
-                StringBuilder s1 = new StringBuilder(list[index + 1]);
-                final DefaultChildCommand dummyChild = new DefaultChildCommand(s1.toString());
-                dummyChild.setPermission(childParent.getPermission());
-                childParent.addChild(s1.toString(), dummyChild);
-                childParent.getChild(s1.toString()).setHandler(new DefaultHandler(null));
-                registerChild(queue, commandHandler, registered, s, false);
-                s1 = new StringBuilder();
-                for (final String s2 : indexer) {
-                    if (indexer.indexOf(s2) < index + 1) {
-                        s1.append(s2).append(".");
-                    }
-                }
+            final ChildCommand childCmd = (ChildCommand) parentCommand;
+            if (!childCmd.getCommand().equals(list[list.length - 2 <= 0 ? 0 : list.length - 2])) {
+                dummyChild.setPermission(childCmd.getPermission());
+                childCmd.addChild(s1.toString(), dummyChild);
+                childCmd.getChild(s1.toString()).setHandler(new DefaultHandler(null));
                 this.logger.log("Generated and Registered DummyChild: " + s1.substring(0, s1.length() - 1));
                 return;
             }
-            childParent.addChild(s, child);
-            childParent.getChild(s).setHandler(new DefaultHandler(queue));
+            childCmd.addChild(s, child);
+            childCmd.getChild(s).setHandler(new DefaultHandler(queue));
             this.logger.log("Registered queued command: " + commandHandler.command());
+        }
+
+        registerChild(queue, commandHandler, registered, s, isAlias);
+        s1 = new StringBuilder();
+        for (final String s2 : indexer) {
+            if (indexer.indexOf(s2) < index + 1) {
+                s1.append(s2).append(".");
+            }
         }
     }
 
@@ -231,9 +212,12 @@ public class CommandManager {
         if (start > list.length - 1) {
             return parentCommand;
         }
-        return parentCommand.hasChild(list[start]) ? recursivelyFindInnerMostParent(command,
-                                                                                    parentCommand.getChild(list[start]),
-                                                                                    ++start) : parentCommand;
+        if (parentCommand.hasChild(list[start])) {
+            return recursivelyFindInnerMostParent(command, parentCommand.getChild(list[start]), ++start);
+        }
+        else {
+            return parentCommand;
+        }
     }
 
     public void registerCommands(final Object classObject) {
