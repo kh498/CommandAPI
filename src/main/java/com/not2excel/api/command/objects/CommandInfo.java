@@ -2,6 +2,7 @@ package com.not2excel.api.command.objects;
 
 import com.not2excel.api.command.CommandHandler;
 import com.not2excel.api.command.handler.CommandException;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -45,7 +46,14 @@ public class CommandInfo {
         this.args = args;
         this.usage = usage;
         this.permission = permission;
-        this.playersOnly = commandHandler.playerOnly();
+
+        if (commandHandler == null) {
+            Bukkit.getLogger().warning("CommandHandler is null, playersOnly is set to the default value false");
+            this.playersOnly = false;
+        }
+        else {
+            this.playersOnly = commandHandler.playerOnly();
+        }
 
         if (isValidFlag(command)) {
             throw new IllegalArgumentException("A sub command cannot be a valid flag!");
@@ -135,6 +143,9 @@ public class CommandInfo {
     }
 
     public String getExplainedUsage() {
+        if (this.commandHandler == null) {
+            return this.getUsage();
+        }
         if (this.fullUsage == null) {
             final String baseCmd = this.commandHandler.command().replaceAll("\\.", " ");
 

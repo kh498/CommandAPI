@@ -135,6 +135,9 @@ public class ChildCommand extends ParentCommand {
     }
 
     public String getLightExplainedUsage() {
+        if (this.commandHandler == null) {
+            return getUsage();
+        }
         if (this.fullUsage == null) {
             final String baseCmd = this.commandHandler.command().replaceAll("\\.", " ");
 
