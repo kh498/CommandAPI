@@ -33,19 +33,16 @@ public class RegisteredCommand extends ParentCommand implements CommandExecutor,
         this.handler = new DefaultHandler(queuedCommand);
     }
 
-    private static void displayChildUsage(final CommandInfo info, final String prefix) {
+    private static void displayChildUsage(final CommandInfo info) {
         //TODO Display aliases
         for (final Entry<String, ChildCommand> entry : info.getParentCommand().getChildCommands().entrySet()) {
             final ChildCommand childCommand = entry.getValue();
             if (!childCommand.isAlias()) {
                 final String description = childCommand.getDescription();
-
-                info.getSender().sendMessage(
-                    ChatColor.YELLOW + childCommand.getLightExplainedUsage() + ChatColor.GRAY + description);
-//                if (!childCommand.getChildCommands().isEmpty()) {
-//                    prefix += " " + entry.getKey();
-//                    displayChildUsage(info, prefix);
-//                }
+                final String Usage = childCommand.getLightExplainedUsage();
+                if (!Usage.isEmpty()) {
+                    info.getSender().sendMessage(ChatColor.YELLOW + Usage + ChatColor.GRAY + description);
+                }
             }
         }
     }
@@ -109,23 +106,8 @@ public class RegisteredCommand extends ParentCommand implements CommandExecutor,
 
     public void displayDefaultUsage(final CommandInfo info) {
         final CommandSender sender = info.getSender();
-        final String command = info.getCommand();
-        final ParentCommand parentCommand = info.getParentCommand();
-        final String prefix;
-
         sender.sendMessage(ChatColor.RED + "Usage: " + info.getExplainedUsage());
-        if (command.equals(getCommand())) {
-            prefix = command;
-        }
-        else {
-            String baseCmd = "";
-            if (info.getCommandHandler() != null) {
-                baseCmd = info.getCommandHandler().command().replaceAll("\\.", " ");
-            }
-            final StringBuilder builder = new StringBuilder(baseCmd);
-            prefix = recursivelyAddToPrefix(builder, command, parentCommand.getChildCommands()).toString();
-        }
-        displayChildUsage(info, prefix);
+        displayChildUsage(info);
     }
     /**
      * recursively create the complete subcommand map of a command
