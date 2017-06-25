@@ -134,7 +134,7 @@ public class ChildCommand extends ParentCommand {
         return this.displayFlagDesc;
     }
 
-    public String getLightExplainedUsage() {
+    String getLightExplainedUsage() {
         if (this.commandHandler == null) {
             return getUsage();
         }

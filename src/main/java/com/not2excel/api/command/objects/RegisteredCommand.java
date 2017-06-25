@@ -14,7 +14,6 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 
 /**
@@ -48,22 +47,22 @@ public class RegisteredCommand extends ParentCommand implements CommandExecutor,
     }
 
     private static List<String> sortQuotedArgs(final List<String> args) {
-        return sortEnclosedArgs(args, '"');
+        return sortEnclosedArgs(args);
     }
 
-    private static List<String> sortEnclosedArgs(final List<String> args, final char c) {
+    private static List<String> sortEnclosedArgs(final List<String> args) {
         final List<String> strings = new ArrayList<>(args.size());
         for (int i = 0; i < args.size(); ++i) {
             String arg = args.get(i);
             if (arg.length() == 0) {
                 continue;
             }
-            if (arg.charAt(0) == c) {
+            if (arg.charAt(0) == '"') {
                 int j;
                 final StringBuilder builder = new StringBuilder();
                 for (j = i; j < args.size(); ++j) {
                     final String arg2 = args.get(j);
-                    if (arg2.charAt(arg2.length() - 1) == c && arg2.length() >= 1) {
+                    if (arg2.charAt(arg2.length() - 1) == '"' && arg2.length() >= 1) {
                         builder.append(j != i ? " " : "").append(arg2.substring(j == i ? 1 : 0, arg2.length() - 1));
                         break;
                     }
@@ -104,25 +103,12 @@ public class RegisteredCommand extends ParentCommand implements CommandExecutor,
         }
     }
 
-    public void displayDefaultUsage(final CommandInfo info) {
+    public static void displayDefaultUsage(final CommandInfo info) {
         final CommandSender sender = info.getSender();
         sender.sendMessage(ChatColor.RED + "Usage: " + info.getExplainedUsage());
         displayChildUsage(info);
     }
-    /**
-     * recursively create the complete subcommand map of a command
-     */
-    private static StringBuilder recursivelyAddToPrefix(final StringBuilder builder, final String parentCommand,
-                                                        final Map<String, ChildCommand> childCommandMap) {
-        for (final Entry<String, ChildCommand> entry : childCommandMap.entrySet()) {
-            if (entry.getKey().equals(parentCommand)) {
-                builder.append(" ").append(entry.getKey());
-                final ChildCommand cc = entry.getValue();
-                recursivelyAddToPrefix(builder, cc.getCommand(), cc.getChildCommands());
-            }
-        }
-        return builder;
-    }
+
     private Method getMethod() {
         return this.queuedCommand.getMethod();
     }

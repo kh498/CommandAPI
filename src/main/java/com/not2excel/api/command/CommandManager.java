@@ -133,7 +133,7 @@ public class CommandManager {
                             abstractCmd.setPermission("");
                             abstractCmd.setPermissionMessage("You don't have permission to do that.");
                             abstractCmd.setUsage("/" + list[0] + " <command>");
-                            abstractCmd.setExecutor(registeredEmpty);
+                            abstractCmd.executor = registeredEmpty;
                             registerBaseCommand(abstractCmd);
                             continue;
                         }
@@ -274,7 +274,7 @@ public class CommandManager {
         abstractCmd.setPermission(commandHandler.permission());
         abstractCmd.setPermissionMessage(commandHandler.noPermission());
         abstractCmd.setUsage(commandHandler.usage());
-        abstractCmd.setExecutor(registered);
+        abstractCmd.executor = registered;
         registerBaseCommand(abstractCmd);
     }
 

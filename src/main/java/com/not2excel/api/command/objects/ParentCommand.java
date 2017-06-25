@@ -9,6 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * All rights Reserved
  * Please read included LICENSE file
  */
+@SuppressWarnings("WeakerAccess")
 public class ParentCommand {
     private final Map<String, ChildCommand> childCommands = new ConcurrentHashMap<>();
     private ChildCommand parentAsChild;
@@ -61,6 +62,7 @@ public class ParentCommand {
     }
 
     void setParentAsChild(final ChildCommand parentAsChild) {
+        //noinspection VariableNotUsedInsideIf
         if (this.parentAsChild != null) {
             throw new IllegalArgumentException("the child has already been set!");
         }

@@ -11,7 +11,7 @@ import org.bukkit.command.CommandSender;
  * Please read included LICENSE file
  */
 public class AbstractCommand extends Command {
-    private CommandExecutor executor;
+    public CommandExecutor executor;
 
     public AbstractCommand(final String name) {
         super(name);
@@ -20,13 +20,5 @@ public class AbstractCommand extends Command {
     @Override
     public boolean execute(final CommandSender commandSender, final String s, final String[] strings) {
         return this.executor != null && this.executor.onCommand(commandSender, this, s, strings);
-    }
-
-    public CommandExecutor getExecutor() {
-        return this.executor;
-    }
-
-    public void setExecutor(final CommandExecutor executor) {
-        this.executor = executor;
     }
 }

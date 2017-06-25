@@ -1,10 +1,7 @@
 package com.not2excel.api.command.handler;
 
 import com.not2excel.api.command.CommandHandler;
-import com.not2excel.api.command.objects.ChildCommand;
-import com.not2excel.api.command.objects.CommandInfo;
-import com.not2excel.api.command.objects.ParentCommand;
-import com.not2excel.api.command.objects.QueuedCommand;
+import com.not2excel.api.command.objects.*;
 import org.bukkit.ChatColor;
 
 import java.lang.reflect.InvocationTargetException;
@@ -33,14 +30,14 @@ public class DefaultHandler implements Handler {
                 sendCommand(info);
             }
             else {
-                info.getRegisteredCommand().displayDefaultUsage(info);
+                RegisteredCommand.displayDefaultUsage(info);
             }
         }
         else if (args.size() > 0) {
             if (("help".equalsIgnoreCase(args.get(0)) && !parentCommand.getChildCommands().containsKey("help")) ||
                 ("?".equalsIgnoreCase(args.get(0)) && !parentCommand.getChildCommands().containsKey("?"))) {
 //                final CommandHandler ch = this.queue.getMethod().getAnnotation(CommandHandler.class);
-                info.getRegisteredCommand().displayDefaultUsage(info);
+                RegisteredCommand.displayDefaultUsage(info);
                 return;
             }
             final ChildCommand child = parentCommand.getChildCommands().get(args.get(0));
@@ -124,6 +121,6 @@ public class DefaultHandler implements Handler {
 
     private static void sendHelpScreen(final CommandInfo info, final String errorMsg) {
         info.getSender().sendMessage(ChatColor.RED + errorMsg);
-        info.getRegisteredCommand().displayDefaultUsage(info);
+        RegisteredCommand.displayDefaultUsage(info);
     }
 }
