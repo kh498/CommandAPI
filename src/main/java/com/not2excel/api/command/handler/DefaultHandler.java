@@ -72,8 +72,9 @@ public class DefaultHandler implements Handler {
     private void sendCommand(final CommandInfo info) throws CommandException {
         final CommandHandler ch = this.queue.getMethod().getAnnotation(CommandHandler.class);
 
-        if (ch.strictArgs() && ch.max() == 0 && info.getArgsLength() == 0) {
-            info.getRegisteredCommand().displayDefaultUsage(info);
+        if (ch.strictArgs() && info.getArgsLength() == 0 &&
+            (!info.getCommandHandler().flags().isEmpty() || ch.max() == 0)) {
+            RegisteredCommand.displayDefaultUsage(info);
             return;
         }
 
