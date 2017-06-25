@@ -178,14 +178,14 @@ public class CommandInfo {
      * @throws CommandException if {@code index} is greater than the size of arguments
      */
     public String getIndex(final int index) throws CommandException {
-        if (index > this.args.size()) {
+        if (index >= this.args.size() || index < 0) {
             throw new CommandException(this.sender, ChatColor.RED + "Invalid index number");
         }
         return this.args.get(index);
     }
 
     public String getIndex(final int index, final String defaultString) {
-        if (index > this.args.size()) {
+        if (index >= this.args.size() || index < 0) {
             return defaultString;
         }
         return this.args.get(index);
@@ -201,7 +201,7 @@ public class CommandInfo {
      * @throws CommandException if {@code index} is invalid or the argument is not an integer
      */
     public int getInt(final int index) throws CommandException {
-        if (index > this.args.size()) {
+        if (index >= this.args.size() || index < 0) {
             throw new CommandException(this.sender, ChatColor.RED + "Invalid index number");
         }
         final int returnValue;
@@ -224,7 +224,7 @@ public class CommandInfo {
      * a {@code CommandException} is encountered
      */
     public int getInt(final int index, final int defaultValue) {
-        if (index > this.args.size()) {
+        if (index >= this.args.size() || index < 0) {
             return defaultValue;
         }
         try {
@@ -244,7 +244,7 @@ public class CommandInfo {
      * @throws CommandException if {@code index} is invalid or the argument is not an double
      */
     public double getDouble(final int index) throws CommandException {
-        if (index > this.args.size()) {
+        if (index >= this.args.size() || index < 0) {
             throw new CommandException(this.sender, ChatColor.RED + "Invalid index number");
         }
         final double returnValue;
@@ -267,7 +267,7 @@ public class CommandInfo {
      * a {@code CommandException} is encountered
      */
     public double getDouble(final int index, final double defaultValue) {
-        if (index > this.args.size()) {
+        if (index >= this.args.size() || index < 0) {
             return defaultValue;
         }
         try {
@@ -278,7 +278,7 @@ public class CommandInfo {
     }
 
     public String joinArgs(final int index) throws CommandException {
-        if (index > this.args.size()) {
+        if (index >= this.args.size() || index < 0) {
             throw new CommandException(this.sender, ChatColor.RED + "Invalid index number");
         }
         final StringBuilder builder = new StringBuilder();
