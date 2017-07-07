@@ -51,9 +51,11 @@ public class ParentCommand {
     }
 
     /**
-     * @return This parents child commands, the key is the subCommand and the value is the ChildCommand object
+     * All the childcommands, no filter if they are an alias or not
+     *
+     * @return All this parents child commands, the key is the subCommand and the value is the ChildCommand object
      */
-    public Map<String, ChildCommand> getChildCommands() {
+    public Map<String, ChildCommand> getAllChildCommands() {
         return this.childCommands;
     }
 

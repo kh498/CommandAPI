@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @author Richmond Steele
+ * @author Richmond Steele, kh498
  * @since 12/16/13
  * All rights Reserved
  * Please read included LICENSE file

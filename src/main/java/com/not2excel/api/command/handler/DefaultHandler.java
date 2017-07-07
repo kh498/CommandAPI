@@ -25,7 +25,7 @@ public class DefaultHandler implements Handler {
     public void handleCommand(final CommandInfo info) throws CommandException {
         final List<String> args = info.getArgs();
         final ParentCommand parentCommand = info.getParentCommand();
-        if (args.size() == 0 || parentCommand.getChildCommands().size() == 0) {
+        if (args.size() == 0 || parentCommand.getAllChildCommands().size() == 0) {
             if (this.queue != null) {
                 sendCommand(info);
             }
@@ -34,13 +34,13 @@ public class DefaultHandler implements Handler {
             }
         }
         else if (args.size() > 0) {
-            if (("help".equalsIgnoreCase(args.get(0)) && !parentCommand.getChildCommands().containsKey("help")) ||
-                ("?".equalsIgnoreCase(args.get(0)) && !parentCommand.getChildCommands().containsKey("?"))) {
+            if (("help".equalsIgnoreCase(args.get(0)) && !parentCommand.getAllChildCommands().containsKey("help")) ||
+                ("?".equalsIgnoreCase(args.get(0)) && !parentCommand.getAllChildCommands().containsKey("?"))) {
 //                final CommandHandler ch = this.queue.getMethod().getAnnotation(CommandHandler.class);
                 RegisteredCommand.displayDefaultUsage(info);
                 return;
             }
-            final ChildCommand child = parentCommand.getChildCommands().get(args.get(0));
+            final ChildCommand child = parentCommand.getAllChildCommands().get(args.get(0));
             if (child == null) {
                 //needed to send parent command instead of throwing errors so that parent command can process args
                 try {

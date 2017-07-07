@@ -238,6 +238,8 @@ public class CommandManager {
 
     public void registerCommands(final Object classObject) {
         if (!CommandListener.class.isAssignableFrom(classObject.getClass())) {
+            this.logger.log(
+                "Failed to register command, CommandListener.class is not assignable from " + classObject.getClass());
             return;
         }
         for (final Method method : classObject.getClass().getDeclaredMethods()) {

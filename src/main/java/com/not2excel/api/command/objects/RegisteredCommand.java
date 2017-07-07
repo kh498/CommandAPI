@@ -34,7 +34,7 @@ public class RegisteredCommand extends ParentCommand implements CommandExecutor,
 
     private static void displayChildUsage(final CommandInfo info) {
         //TODO Display aliases
-        for (final Entry<String, ChildCommand> entry : info.getParentCommand().getChildCommands().entrySet()) {
+        for (final Entry<String, ChildCommand> entry : info.getParentCommand().getAllChildCommands().entrySet()) {
             final ChildCommand childCommand = entry.getValue();
             if (!childCommand.isAlias()) {
                 final String description = childCommand.getDescription();
@@ -47,10 +47,6 @@ public class RegisteredCommand extends ParentCommand implements CommandExecutor,
     }
 
     private static List<String> sortQuotedArgs(final List<String> args) {
-        return sortEnclosedArgs(args);
-    }
-
-    private static List<String> sortEnclosedArgs(final List<String> args) {
         final List<String> strings = new ArrayList<>(args.size());
         for (int i = 0; i < args.size(); ++i) {
             String arg = args.get(i);

@@ -163,6 +163,9 @@ public class CommandInfo {
         return this.fullUsage;
     }
 
+    /**
+     * @return The description of the command
+     */
     public String getDescription() {
         if (this.commandHandler == null) {
             return "";
