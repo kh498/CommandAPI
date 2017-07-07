@@ -7,9 +7,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Richmond Steele, kh498
@@ -35,14 +33,24 @@ public class AbstractCommand extends Command {
         final CommandManager cmdManager = CommandManager.getInstance();
         final Map<String, RegisteredCommand> registeredCmds = cmdManager.getRegisteredCommands();
         final RegisteredCommand regCmd = registeredCmds.get(this.getName());
+
         if (regCmd != null) {
-            if (args.length == 0) {
-                return new ArrayList<>(regCmd.getNoAliasesChildCommands().keySet());
+            final Set<String> subCmdsSet = new TreeSet<>();
+            subCmdsSet.addAll(regCmd.getNoAliasesChildCommands().keySet());
+            
+            if (!subCmdsSet.contains("help")) {
+                subCmdsSet.add("help");
+            }
+            else if (!subCmdsSet.contains("?")) {
+                subCmdsSet.add("?");
             }
 
-            if (args.length == 1) {
+            if (args.length == 1 && args[0].length() == 0) {
+                return new ArrayList<>(subCmdsSet);
+            }
+            else if (args.length == 1) {
                 return new ArrayList<String>() {{
-                    for (final String subCmd : regCmd.getNoAliasesChildCommands().keySet()) {
+                    for (final String subCmd : subCmdsSet) {
                         //The first character of both is equal and the subCmd contains args[0]
                         if (StringUtils.containsIgnoreCase(subCmd, args[0])) {
                             if (args[0].toCharArray().length > 0 &&
