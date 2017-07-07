@@ -34,6 +34,7 @@ public class CommandManager {
     private final Map<String, RegisteredCommand> registeredCommands = new ConcurrentHashMap<>();
     private final LevelLogger logger;
     private CommandMap commandMap;
+    public static CommandManager instance;
 
     private final static boolean DEBUG = false;
 
@@ -42,6 +43,7 @@ public class CommandManager {
         this.logger = LevelLogger.getInstance();
         this.logger.setLogType("CommandHandlerAPI");
         this.logger.setTimeStamped(false);
+        instance = this;
     }
 
     public void registerHelp() {
@@ -314,5 +316,15 @@ public class CommandManager {
             }
         }
         return this.commandMap;
+    }
+
+    public Plugin getPlugin() {
+        return this.plugin;
+    }
+    public static CommandManager getInstance() {
+        return instance;
+    }
+    public Map<String, RegisteredCommand> getRegisteredCommands() {
+        return this.registeredCommands;
     }
 }

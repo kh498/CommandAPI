@@ -13,6 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ParentCommand {
     private final Map<String, ChildCommand> childCommands = new ConcurrentHashMap<>();
     private ChildCommand parentAsChild;
+    private final Map<String, ChildCommand> childBaseCommands = new ConcurrentHashMap<>();
 
 
     /**
@@ -56,6 +57,21 @@ public class ParentCommand {
         return this.childCommands;
     }
 
+    /**
+     * Only return the basecommands of this parents child command
+     *
+     * @return This base parents child commands, the key is the subCommand and the value is the ChildCommand object
+     */
+    public Map<String, ChildCommand> getNoAliasesChildCommands() {
+        if (this.childBaseCommands.isEmpty() && !this.childCommands.isEmpty()) {
+            for (final Map.Entry<String, ChildCommand> entry : this.childCommands.entrySet()) {
+                if (!entry.getValue().isAlias()) {
+                    this.childBaseCommands.put(entry.getKey(), entry.getValue());
+                }
+            }
+        }
+        return this.childBaseCommands;
+    }
 
     public ChildCommand getParentAsChild() {
         return this.parentAsChild;
