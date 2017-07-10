@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>com.not2excel.api</groupId>
+  <artifactId>CommandAPI</artifactId>
+  <versioning>
+    <release>2.0</release>
+    <versions>
+      <version>2.0</version>
+    </versions>
+    <lastUpdated>20170710231818</lastUpdated>
+  </versioning>
+</metadata>
