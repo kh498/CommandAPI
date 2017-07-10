@@ -1,8 +1,10 @@
 CommandAPI 
 ==========
-__About:__ This is a CommandAPI that I developed so that I can avoid having to statically register any command whether using reflection and a CommandExecutor, or simply putting the commands into my plugin.yml. This is a purely annotation based API.  The functionality to statically add commands is there, I just have not implemented any ways that are easy for a user to do so. 
+## About
+This is a CommandAPI that I developed so that I can avoid having to statically register any command whether using reflection and a CommandExecutor, or simply putting the commands into my plugin.yml. This is a purely annotation based API.  The functionality to statically add commands is there, I just have not implemented any ways that are easy for a user to do so. 
 
-__How to use:__ Using this CommandAPI is super simple, and requires minimum 3 lines to register the commands, and obviously the commands themselves.
+## How to use
+Using this CommandAPI is super simple, and requires minimum 3 lines to register the commands, and obviously the commands themselves.
 
 First in either your onEnable() or onLoad() you're going to want to do this:
 ```java
@@ -12,6 +14,34 @@ commandManager.registerHelp(); //registers a generated helptopic to bukkit
 //so the /help PluginName displays our plugin's registered commands
 ```
 
+## attribute values explained
+
+__command__: _(String)_ This is the name of the command. eg command /test will have _command = "test"_
+
+__aliases__: _(String[], default: {})_ A list of aliases for this command
+
+__permission__: _(String, default: "")_ The permission a players need to execute the command
+
+__noPermission__: _(String, default: "You don't have permission to do that.")_ The string displayed when the player doesn't have the permission for this command
+
+__usage__: _(String, default: "")_ The arbitrary arguments of the command
+
+__description__: _(String, default: "")_ A description of what the command does
+
+__min__: _(int, default: 0)_ The minimum number of arguments this command can have
+
+__max__: _(int, default: -1)_ The maximum number og arguments this command can have
+
+__playerOnly__: _(boolean, default: false)_ If only players can excecute this command
+
+__flags__: _(String, default: "")_ The flags of this command (see flags example below)
+
+__strictArgs__: _(boolean, default: false)_ If only known subcommand are allowed as arguments (see first example below)
+
+__flagDesc__: _(String[], default: {})_ The description of what each flag does (see flags example below)
+
+
+## Example commands
 Example commands to be registered: Here are some test commands to display how commands should be written to allow registration.  CommandListener is a required interface for any class you wish commands to be registered from.  This is to allow shrinkage of classes searched for commands, and increase registration time.
 A real example can be found [here](https://gist.github.com/kh498/45af9f07ec6884c259a84687c788786a)
 ```java
