@@ -18,19 +18,21 @@ A real example can be found [here](https://gist.github.com/kh498/45af9f07ec6884c
 public class TestCommand implements CommandListener //CommandListener is required
 {
 
-    /*
-    command is the only required field for the annotation
+        /*
+        command is the only required field for the annotation
 
-    The base command is not required. If not created, a default one will be generated and will direct to the usage
-    upon command use
+        The base command is required (bug in 1.0). If you want the base command to display the
+        help screen when called without any arguments add the attribute values "strictArgs = true" and "max = 0"
     
-    Do not register the command in plugin.yml as it is all handled by this api
-     */
-    @CommandHandler(command = "test")
-    public static void testingCommand(CommandInfo info)
-    {
+        Do not register the command in plugin.yml as it is all handled by this API!
+        
+        
+         */
+        @CommandHandler(command = "test")
+        public static void testingCommand(CommandInfo info)
+        {
         info.getSender().sendMessage("Test worked");
-    }
+        }
 
         /* 
          A dot in the command string marks this as a sub command. It can go infinitely deep. 
