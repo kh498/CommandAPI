@@ -6,11 +6,13 @@
 
     <groupId>com.not2excel.api</groupId>
     <artifactId>CommandAPI</artifactId>
-    <version>1.4</version>
+    <version>2.0</version>
     <packaging>jar</packaging>
-
     <name>CommandAPI</name>
 
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
     <build>
         <finalName>CommandAPI</finalName>
         <sourceDirectory>${basedir}/src/main/java</sourceDirectory>
