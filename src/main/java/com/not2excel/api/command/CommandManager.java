@@ -3,7 +3,6 @@ package com.not2excel.api.command;
 import com.not2excel.api.command.handler.DefaultHandler;
 import com.not2excel.api.command.objects.*;
 import com.not2excel.api.logging.LevelLogger;
-import com.not2excel.api.logging.LogType;
 import com.not2excel.api.reflection.ClassEnumerator;
 import com.not2excel.api.reflection.ReflectionUtils;
 import org.bukkit.Bukkit;
@@ -16,7 +15,6 @@ import org.bukkit.help.HelpTopicComparator;
 import org.bukkit.help.IndexHelpTopic;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.SimplePluginManager;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -24,7 +22,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * @author Richmond Steele
+ * @author Richmond Steele, kh498
  * @since 12/17/13 All rights Reserved Please read included LICENSE file
  */
 @SuppressWarnings("unused")
@@ -62,36 +60,15 @@ public class CommandManager {
     }
 
     public void registerCommands() {
-        this.logger.log("WARNING: The CommandAPI cannot dynamically register commands from " +
-                        "classes that do not use the default constructor.");
-        this.logger.log("SOLUTION: Please use the static registrar registerCommands(object) if you need to register " +
-                        "commands from classes that do not use the default constructor.");
-
         final Class<?>[] classes = ClassEnumerator.getInstance().getClassesFromThisJar(this.plugin);
         if (classes == null || classes.length == 0) {
             this.logger.log("No classes can be found!");
             return;
         }
-        for (final Class<?> c : classes) {
-            try {
-                if (CommandListener.class.isAssignableFrom(c) && !c.isInterface() && !c.isEnum() && !c.isAnnotation()) {
-                    if (JavaPlugin.class.isAssignableFrom(c)) {
-                        if (this.plugin.getClass().equals(c)) {
-                            if (DEBUG) { this.logger.log("Searching class: " + c.getSimpleName()); }
-                            registerCommands(this.plugin);
-                        }
-                    }
-                    else {
-                        if (DEBUG) { this.logger.log("Searching class: " + c.getSimpleName()); }
-                        registerCommands(c.newInstance());
-                    }
-                }
-            } catch (final InstantiationException | IllegalAccessException e) {
-
-                if (DEBUG) {
-                    this.logger.log(LogType.ERROR, c.getSimpleName() + " does not use the default constructor");
-                }
-                e.printStackTrace();
+        for (final Class<?> clazz : classes) {
+            if (CommandListener.class.isAssignableFrom(clazz) && !clazz.isInterface() && !clazz.isEnum() &&
+                !clazz.isAnnotation()) {
+                registerCommands(clazz);
             }
         }
         processQueuedCommands();
@@ -236,21 +213,28 @@ public class CommandManager {
         }
     }
 
-    public void registerCommands(final Object classObject) {
-        if (!CommandListener.class.isAssignableFrom(classObject.getClass())) {
-            this.logger.log(
-                "Failed to register command, CommandListener.class is not assignable from " + classObject.getClass());
+    /**
+     * This is here for legacy reasons. Wont do anything upon runtime.
+     *
+     * @deprecated Use {@link #registerCommands() } instead as it will load
+     * find all classes that has {@link CommandListener} implemented.
+     */
+    @Deprecated
+    public void registerCommands(final Object classObject) { }
+
+    private void registerCommands(final Class<?> clazz) {
+        if (!CommandListener.class.isAssignableFrom(clazz)) {
+            this.logger.log("Failed to register command, CommandListener.class is not assignable from " + clazz);
             return;
         }
-        for (final Method method : classObject.getClass().getDeclaredMethods()) {
-            if (DEBUG) { this.logger.log("Testing if method: " + method.getName() + " is a CommandHandler"); }
+        for (final Method method : clazz.getDeclaredMethods()) {
+            if (DEBUG) { this.logger.log("Testing if method '" + method.getName() + "' is a CommandHandler"); }
             final CommandHandler commandHandler = method.getAnnotation(CommandHandler.class);
             if (commandHandler == null || !method.getParameterTypes()[0].equals(CommandInfo.class)) {
-                if (DEBUG) { this.logger.log(method.getName() + " is not a CommandHandler"); }
                 continue;
             }
-            if (DEBUG) { this.logger.log("Method: " + method.getName() + " is a CommandHandler"); }
-            Object object = classObject;
+            if (DEBUG) { this.logger.log("Method '" + method.getName() + "' is a CommandHandler"); }
+            Object object = clazz;
             if (Modifier.isStatic(method.getModifiers())) {
                 object = null;
             }
