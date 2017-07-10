@@ -1,7 +1,28 @@
 CommandAPI 
 ==========
 ## About
-This is a CommandAPI that I developed so that I can avoid having to statically register any command whether using reflection and a CommandExecutor, or simply putting the commands into my plugin.yml. This is a purely annotation based API.  The functionality to statically add commands is there, I just have not implemented any ways that are easy for a user to do so. 
+This is a CommandAPI that I developed so that I can avoid having to statically register any command whether using reflection and a CommandExecutor, or simply putting the commands into my plugin.yml. This is a purely annotation based API.  The functionality to statically add commands is there, I just have not implemented any ways that are easy for a user to do so.
+
+## Maven
+
+```
+<repository>
+    <id>CommandAPI</id>
+    <url>https://raw.github.com/kh498/CommandAPI/mvn-repo/</url>
+    <snapshots>
+        <enabled>true</enabled>
+        <updatePolicy>always</updatePolicy>
+    </snapshots>
+</repository>
+```
+
+```
+<dependency>
+    <groupId>com.not2excel.api</groupId>
+    <artifactId>CommandAPI</artifactId>
+    <version>2.0</version>
+</dependency>
+```
 
 ## How to use
 Using this CommandAPI is super simple, and requires minimum 3 lines to register the commands, and obviously the commands themselves.
