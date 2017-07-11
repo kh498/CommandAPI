@@ -1,7 +1,14 @@
 CommandAPI 
 ==========
 ## About
-This is a CommandAPI that I developed so that I can avoid having to statically register any command whether using reflection and a CommandExecutor, or simply putting the commands into my plugin.yml. This is a purely annotation based API.  The functionality to statically add commands is there, I just have not implemented any ways that are easy for a user to do so.
+This is a CommandAPI that is developed to avoid having to statically register any command whether using reflection and a CommandExecutor, or simply putting the commands into my plugin.yml. This is a purely annotation based API.
+
+## Features
+* Easy registation and managment of commands
+* Advanced automated helpscreen (see pictures below)
+* Automated tab completer (for now only first argument, to be improved)
+* Support to use flags
+* See attribute values explained for more
 
 ## Maven
 
