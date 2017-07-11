@@ -8,6 +8,7 @@ This is a CommandAPI that is developed to avoid having to statically register an
 * Advanced automated helpscreen (see pictures below)
 * Automated tab completer (for now only first argument, to be improved)
 * Support to use flags
+* Maven support
 * See attribute values explained for more
 
 ## Maven
