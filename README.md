@@ -132,4 +132,12 @@ public class TestCommand implements CommandListener //CommandListener is require
 }
 ```
 
+## Pictures
+Here are some pictures on how the automated help screen looks.
+
+![image](https://user-images.githubusercontent.com/1556738/28045587-4b32c6e8-65de-11e7-8d2d-d215e0c63a5a.png)
+
+![image](https://user-images.githubusercontent.com/1556738/28045615-77fb168a-65de-11e7-9117-2422ebb644ed.png)
+
+
 __Finally:__ Please leave any comments, suggestions, and/or bugs you may find while using this CommandAPI.
