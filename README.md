@@ -11,7 +11,7 @@ This is a CommandAPI that is developed to avoid having to statically register an
 * Maven support
 * See attribute values explained for more
 
-## Maven
+## Maven/Install
 
 ```
 <repository>
@@ -31,6 +31,39 @@ This is a CommandAPI that is developed to avoid having to statically register an
     <version>2.0</version>
 </dependency>
 ```
+
+To use CommandAPI you also need to shade it into your project to do so add the following to your pom.xml 
+
+```
+<build>
+    <plugins>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-shade-plugin</artifactId>
+            <version>3.0.0</version>
+            <executions>
+                <execution>
+                    <id>shade</id>
+                    <phase>package</phase>
+                    <goals>
+                        <goal>shade</goal>
+                    </goals>
+                </execution>
+            </executions>
+            <configuration>
+                <minimizeJar>true</minimizeJar> <!-- Only include packages that you are using Note: Requires Java 1.5 or higher. -->
+                <artifactSet>
+                    <includes>
+                        <include>com.not2excel.api:CommandAPI</include>
+                    </includes>
+                </artifactSet>
+            </configuration>
+        </plugin>
+    </plugins>
+</build>
+            
+```
+
 
 ## How to use
 Using this CommandAPI is super simple, and requires minimum 3 lines to register the commands, and obviously the commands themselves.
