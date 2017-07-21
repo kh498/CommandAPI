@@ -83,7 +83,8 @@ public class DefaultHandler implements Handler {
             sendHelpScreen(info, "Too many arguments.");
             return;
         }
-        if (!info.getSender().hasPermission(info.getCommandHandler().permission())) {
+        if (!"".equals(info.getCommandHandler().permission()) &&
+            !info.getSender().hasPermission(info.getCommandHandler().permission())) {
             info.getSender().sendMessage(ChatColor.RED + info.getCommandHandler().noPermission());
             return;
         }
