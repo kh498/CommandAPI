@@ -96,11 +96,20 @@ public @interface CommandHandler {
     /**
      * Defines the flags available for this command. A flag is a single character such as {@code -f} that will
      * alter the behaviour of the command. Each character in this string will be counted as a valid flag: extra flags
-     * will be discarded.
+     * will be discarded. If one of the flags is '*' (asterisks) then this will override the default asterisks flag.
+     * With this you can set the permission of the asterisks flag. If you do not want to have the asterisk flag then set
+     * {@code asteriskFlag = false}
      * <p>
-     * Flags can only be any english character (a-z and A-Z) including * as a catch all.
+     * Flags can only be any english character (a-z and A-Z) including '*' (asterisks) as a catch all.
      */
-    String flags() default "";
+    Flag[] flags() default {};
+
+    /**
+     * Defines if asterisks (*) can be used as a catch all. If this is set to false but there is declared a
+     * asterisk flag with the {@code flags()} attribute that flag will function as an asterisk flag. Note that
+     * it is not necessary to enable this to override the permission of the asterisk flag.
+     */
+    boolean asteriskFlag() default true;
 
     /**
      * Defines if there can be arbitrary variables. If set to true the command cannot have any unknown variables.
@@ -110,9 +119,4 @@ public @interface CommandHandler {
      * It is suggested that this is set to true if you only want flags as args.
      */
     boolean strictArgs() default false;
-
-    /**
-     * Describes in detail what each flag does. Use one string per flag.
-     */
-    String[] flagDesc() default {};
 }

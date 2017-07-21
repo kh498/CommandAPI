@@ -1,10 +1,14 @@
 package com.not2excel.api.command.objects;
 
 import com.not2excel.api.command.CommandHandler;
+import com.not2excel.api.command.Flag;
 import com.not2excel.api.command.handler.ErrorHandler;
 import com.not2excel.api.command.handler.Handler;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author Richmond Steele, kh498
@@ -19,17 +23,23 @@ public class ChildCommand extends ParentCommand {
     protected String usage = "";
     protected String description = "";
     protected String permission = "";
-    protected String flags = "";
     private Handler handler;
     private String displayFlag = "";
-    private final String[] flagDesc = {};
     private String displayFlagDesc = "";
     private String fullUsage;
+    private final Set<Character> flags;
 
     public ChildCommand(final CommandHandler commandHandler, final boolean isAlias) {
         setParentAsChild(this);
         this.commandHandler = commandHandler;
         this.isAlias = isAlias;
+
+        this.flags = new HashSet<>();
+        if (commandHandler != null) {
+            for (final Flag flag : commandHandler.flags()) {
+                this.flags.add(flag.flag());
+            }
+        }
     }
 
     public CommandHandler getCommandHandler() {
@@ -89,28 +99,42 @@ public class ChildCommand extends ParentCommand {
         }
     }
 
-    public String getFlags() {
-        if (this.commandHandler == null) {
-            return this.flags;
-        }
-        else {
-            return this.commandHandler.flags();
-        }
+    /**
+     * @return All valid flags for this command
+     */
+    public Set<Character> getFlags() {
+        return this.flags;
     }
 
-    public String[] getFlagsDesc() {
-        if (this.commandHandler == null) {
-            return this.flagDesc;
+
+    /**
+     * @param checkFlag The flag to check
+     *
+     * @return The flag corresponding ot the char
+     */
+    public Flag getFlagAnnotation(final char checkFlag) {
+        if (this.commandHandler == null) {return null;}
+        for (final Flag flag : this.commandHandler.flags()) {
+            if (flag.flag() == checkFlag) {
+                return flag;
+            }
         }
-        else {
-            return this.commandHandler.flagDesc();
-        }
+        return null;
+    }
+
+    /**
+     * @param c The character to check
+     *
+     * @return If this command has a flag with the character {@code c}
+     */
+    public boolean hasFlag(final char c) {
+        return this.flags.contains(c);
     }
 
     String getDisplayFlags() {
         if (this.displayFlag.isEmpty() && !getFlags().isEmpty()) {
             final StringBuilder flagsBuilder = new StringBuilder().append(ChatColor.GOLD);
-            for (final char c : this.getFlags().toCharArray()) {
+            for (final char c : this.getFlags()) {
                 flagsBuilder.append('-').append(c).append(' ');
             }
             this.displayFlag = flagsBuilder.toString();
@@ -119,13 +143,13 @@ public class ChildCommand extends ParentCommand {
     }
 
     String getDisplayFlagDesc() {
-        final int length = getFlagsDesc().length;
-        if (!getFlags().isEmpty() && length != 0) {
+        if (!this.flags.isEmpty()) {
             final StringBuilder flagsDescBuilder = new StringBuilder(ChatColor.GRAY + "\n");
 
-            for (int i = 0; i < length; i++) {
-                flagsDescBuilder.append("     ").append(getFlagsDesc()[i]);
-                if (i + 1 < length) {
+            final Flag[] flags1 = this.commandHandler.flags();
+            for (int i = 0; i < flags1.length; i++) {
+                flagsDescBuilder.append("     ").append(flags1[i].usage());
+                if (i + 1 < flags1.length) {
                     flagsDescBuilder.append("\n");
                 }
             }

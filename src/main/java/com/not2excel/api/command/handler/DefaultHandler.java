@@ -1,6 +1,7 @@
 package com.not2excel.api.command.handler;
 
 import com.not2excel.api.command.CommandHandler;
+import com.not2excel.api.command.Flag;
 import com.not2excel.api.command.objects.*;
 import org.bukkit.ChatColor;
 
@@ -71,7 +72,7 @@ public class DefaultHandler implements Handler {
         final CommandHandler ch = this.queue.getMethod().getAnnotation(CommandHandler.class);
 
         if (ch.strictArgs() && info.getArgsLength() == 0 &&
-            (!info.getCommandHandler().flags().isEmpty() || ch.max() == 0)) {
+            (info.getCommandHandler().flags().length != 0 || ch.max() == 0)) {
             RegisteredCommand.displayDefaultUsage(info);
             return;
         }
@@ -95,23 +96,39 @@ public class DefaultHandler implements Handler {
             return;
         }
 
-        if (!info.hasAsteriskFlag()) {
-            for (final char flag : info.getFlags()) {
-                if (!ch.flags().contains(String.valueOf(flag))) {
-                    sendHelpScreen(info, "Unknown flag: " + flag);
-                    return;
-                }
+        for (final char flagChar : info.getFlags()) {
+            final ChildCommand cmd = info.getParentCommand().getParentAsChild();
+            final Flag flag;
+
+            //Let the flag * always be present, but if it is overridden then use that
+            if (flagChar == '*' && !cmd.hasFlag('*')) {
+                flag = info.getCommandHandler().asteriskFlag() ? defaultAsteriskFlag() : null;
+            }
+            else {
+                flag = cmd.getFlagAnnotation(flagChar);
+            }
+
+            if (flag == null) {
+                sendHelpScreen(info, "Unknown flag: " + flagChar);
+                return;
+            }
+
+            //player does not have permission to execute the command with this flag
+            if (info.isPlayer() && !"".equals(flag.permission()) &&
+                !info.getPlayer().hasPermission(flag.permission())) {
+                info.getSender().sendMessage(ChatColor.RED + flag.noPermission());
+                return;
             }
         }
 
+
         if (ch.strictArgs()) {
             for (final String arg : info.getArgs()) {
-                if (!CommandInfo.isValidFlag(arg)) {
+                if (!CommandInfo.matchesFlagPattern(arg)) {
                     sendHelpScreen(info, "Unknown subcommand: " + arg);
                     return;
                 }
             }
-
         }
 
         try {
@@ -124,5 +141,15 @@ public class DefaultHandler implements Handler {
     private static void sendHelpScreen(final CommandInfo info, final String errorMsg) {
         info.getSender().sendMessage(ChatColor.RED + errorMsg);
         RegisteredCommand.displayDefaultUsage(info);
+    }
+
+    @Flag(flag = '*')
+    private Flag defaultAsteriskFlag() {
+        try {
+            return getClass().getDeclaredMethod("defaultAsteriskFlag").getAnnotation(Flag.class);
+        } catch (final NullPointerException | NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
