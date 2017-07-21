@@ -26,6 +26,7 @@ public class DefaultHandler implements Handler {
         final List<String> args = info.getArgs();
         final ParentCommand parentCommand = info.getParentCommand();
         if (args.size() == 0 || parentCommand.getAllChildCommands().size() == 0) {
+            //noinspection VariableNotUsedInsideIf
             if (this.queue != null) {
                 sendCommand(info);
             }

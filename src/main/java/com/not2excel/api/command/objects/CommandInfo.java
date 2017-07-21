@@ -33,17 +33,17 @@ public class CommandInfo {
     private boolean hasAsteriskFlag;
     private String fullUsage;
 
-    private static final Pattern FLAG = Pattern.compile("^-[a-zA-Z*]$");
+    private static final Pattern FLAG_PATTERN = Pattern.compile("^-[a-zA-Z*]$");
 
     public CommandInfo(final RegisteredCommand registeredCommand, final ParentCommand parentCommand,
                        final CommandHandler commandHandler, final CommandSender sender, final String command,
-                       final List<String> args, final String usage, final String permission) {
+                       final List<String> cmdArgs, final String usage, final String permission) {
         this.registeredCommand = registeredCommand;
         this.parentCommand = parentCommand;
         this.commandHandler = commandHandler;
         this.sender = sender;
         this.command = command;
-        this.args = args;
+        this.args = cmdArgs;
         this.usage = usage;
         this.permission = permission;
 
@@ -53,9 +53,11 @@ public class CommandInfo {
         }
         else {
             this.playersOnly = commandHandler.playerOnly();
+
+
         }
 
-        if (isValidFlag(command)) {
+        if (matchesFlagPattern(command)) {
             throw new IllegalArgumentException("A sub command cannot be a valid flag!");
         }
 
@@ -63,10 +65,9 @@ public class CommandInfo {
         /*
          Iterate through tempArgs and look for flags. (eks -f or -R)
          */
-        for (final String arg : args) {
-            final int length = arg.length();
-            if (length == 0) { continue; }
-            if (isValidFlag(arg)) {
+        for (final String arg : cmdArgs) {
+            if (arg.length() == 0) { continue; }
+            if (matchesFlagPattern(arg)) {
                 if (!this.hasAsteriskFlag && arg.charAt(1) == '*') {
                     this.hasAsteriskFlag = true;
                 }
@@ -325,6 +326,7 @@ public class CommandInfo {
             return true;
         }
 
+
         for (final char c : s.toCharArray()) {
             if (this.flags.contains(c)) {
                 return true;
@@ -340,7 +342,12 @@ public class CommandInfo {
         return this.hasAsteriskFlag;
     }
 
-    public static boolean isValidFlag(final String str) {
-        return FLAG.matcher(str).matches();
+    /**
+     * @param str The string to check
+     *
+     * @return If str is formatted as a flag
+     */
+    public static boolean matchesFlagPattern(final String str) {
+        return FLAG_PATTERN.matcher(str).matches();
     }
 }
