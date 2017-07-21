@@ -1,9 +1,17 @@
 CommandAPI 
 ==========
 ## About
-This is a CommandAPI that I developed so that I can avoid having to statically register any command whether using reflection and a CommandExecutor, or simply putting the commands into my plugin.yml. This is a purely annotation based API.  The functionality to statically add commands is there, I just have not implemented any ways that are easy for a user to do so.
+This is a CommandAPI that is developed to avoid having to statically register any command whether using reflection and a CommandExecutor, or simply putting the commands into my plugin.yml. This is a purely annotation based API.
 
-## Maven
+## Features
+* Easy registation and managment of commands
+* Advanced automated helpscreen (see pictures below)
+* Automated tab completer (for now only first argument, to be improved)
+* Support to use flags
+* Maven support
+* See attribute values explained for more
+
+## Maven/Install
 
 ```
 <repository>
@@ -24,14 +32,49 @@ This is a CommandAPI that I developed so that I can avoid having to statically r
 </dependency>
 ```
 
+To use CommandAPI you also need to shade it into your project to do so add the following to your pom.xml 
+
+```
+<build>
+    <plugins>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-shade-plugin</artifactId>
+            <version>3.0.0</version>
+            <executions>
+                <execution>
+                    <id>shade</id>
+                    <phase>package</phase>
+                    <goals>
+                        <goal>shade</goal>
+                    </goals>
+                </execution>
+            </executions>
+            <configuration>
+                <minimizeJar>true</minimizeJar> <!-- Only include packages that you are using Note: Requires Java 1.5 or higher. -->
+                <artifactSet>
+                    <includes>
+                        <include>com.not2excel.api:CommandAPI</include>
+                    </includes>
+                </artifactSet>
+            </configuration>
+        </plugin>
+    </plugins>
+</build>
+            
+```
+
+
 ## How to use
 Using this CommandAPI is super simple, and requires minimum 3 lines to register the commands, and obviously the commands themselves.
 
 First in either your onEnable() or onLoad() you're going to want to do this:
 ```java
-CommandManager commandManager = new CommandManager(this); //this == plugin instance
-commandManager.registerCommands(testingCommand); //registers commands from anywhere in the plugin jar
-commandManager.registerHelp(); //registers a generated helptopic to bukkit
+final CommandManager commandManager = new CommandManager(plugin); //where plugin is a plugin instance
+// Automatically finds all classes that implements the CommandListener.class and registers their commands
+commandManager.registerCommands();
+//registers a generated help topic to bukkit
+commandManager.registerHelp();
 //so the /help PluginName displays our plugin's registered commands
 ```
 
@@ -66,64 +109,76 @@ __flagDesc__: _(String[], default: {})_ The description of what each flag does (
 Example commands to be registered: Here are some test commands to display how commands should be written to allow registration.  CommandListener is a required interface for any class you wish commands to be registered from.  This is to allow shrinkage of classes searched for commands, and increase registration time.
 A real example can be found [here](https://gist.github.com/kh498/45af9f07ec6884c259a84687c788786a)
 ```java
+import com.not2excel.api.command.CommandHandler;
+import com.not2excel.api.command.CommandListener;
+import com.not2excel.api.command.objects.CommandInfo;
+
 public class TestCommand implements CommandListener //CommandListener is required
 {
-
-        /*
-        command is the only required field for the annotation
-
-        The base command is required (bug in 1.0). If you want the base command to display the
-        help screen when called without any arguments add the attribute values "strictArgs = true" and "max = 0"
-    
-        Do not register the command in plugin.yml as it is all handled by this API!
-        
-        
-         */
-        @CommandHandler(command = "test")
-        public static void testingCommand(CommandInfo info)
-        {
+    /*
+     * command is the only required field for the annotation
+     *
+     * The base command is required (bug in 2.0). If you want the base command to display the
+     * help screen when called without any arguments add the attribute values "strictArgs = true" and "max = 0"
+     *
+     * Do NOT register the command in plugin.yml as it is all handled by this API!
+     */
+    @CommandHandler(command = "test")
+    public static void testingCommand(final CommandInfo info) {
         info.getSender().sendMessage("Test worked");
-        }
+    }
 
-        /* 
-         A dot in the command string marks this as a sub command. It can go infinitely deep. 
-         Do not have the command and/or subcommand in the usage, that is built in.
-         */
-           @CommandHandler(command = "test.test2", permission = "test.test2", noPermission = "No access!",
-                        aliases = {"2", "testing"}, usage = "<player>",
-                        description = "Testing out all of the CommandHandler's attribute values")
-        public static void testingCommand2(CommandInfo info)
-        {
-            info.getSender().sendMessage("Test2 worked");
+    /*
+     * A dot in the command string marks this as a sub command. It can go infinitely deep.
+     * Do not have the command and/or subcommand in the usage, that is built in.
+     */
+    @CommandHandler(command = "test.test2",
+                    permission = "test.test2",
+                    noPermission = "No access!",
+                    aliases = {"2", "testing"},
+                    usage = "<player>",
+                    flags = "f",
+                    flagDesc = "Activate some feature",
+                    description = "Testing out (almost) all of the CommandHandler's attribute values")
+    public static void testingCommand2(final CommandInfo info) {
+        info.getSender().sendMessage("Test2 worked");
+    }
+
+    /*
+     * A flag is a single character such as {@code -f} that will alter the behaviour of the command. flags can only
+     * be any english character (a-z and A-Z) including * as a catch all.
+     *
+     * Defines if there can be arbitrary variables. If set to true the command cannot have any unknown variables.
+     * The arguments will either be a subcommand or a flag, if not an error is thrown. This means that flags are
+     * ignored and can be used.
+     *
+     * It is suggested that this is set to true if you only want flags as arguments.
+     */
+    @CommandHandler(command = "test.reset",
+                    flags = "kr",
+                    flagDesc = {"-k resets kingdoms", "-r resets reficules"},
+                    strictArgs = true,
+                    // only allow flags as arguments
+                    description = "resets stuff!")
+    public static void testingCommand3(final CommandInfo info) {
+        //user gave the argument -f or -*
+        if (info.hasFlag('k')) {
+            // Do some resetting
         }
-        
-        /*
-         A flag is a single character such as {@code -f} that will alter the behaviour of the command. flags can only
-          be any english character (a-z and A-Z) including * as a catch all.
-         
-         Defines if there can be arbitrary variables. If set to true the command cannot have any unknown variables.
-         The arguments will either be a subcommand or a flag, if not an error is thrown. This means that flags are
-         ignored and can be used.
-     
-         It is suggested that this is set to true if you only want flags as arguments.
-         */
-        @CommandHandler(command = "test.reset",
-                        flags = "kr",
-                        flagDesc = {"-k resets kingdoms", "-r resets reficules"},
-                        strictArgs = true,
-                        description = "resets stuff!")
-        public static void testingCommand2(CommandInfo info)
-        {
-            //user gave the argument -f or -*
-            if (info.hasFlag('k')) {
-                // Do some resetting
-            }
-            //returns true if one of the chars in the input string matches one of the flags the user gave
-            if (info.hasOneOfFlags("kr")) {
-                // reload or something
-            }
+        //returns true if one of the chars in the input string matches one of the flags the user gave
+        if (info.hasOneOfFlags("kr")) {
+            // reload or something
         }
     }
+}
 ```
+
+## Pictures
+Here are some pictures on how the automated help screen looks.
+
+![image](https://user-images.githubusercontent.com/1556738/28045587-4b32c6e8-65de-11e7-8d2d-d215e0c63a5a.png)
+
+![image](https://user-images.githubusercontent.com/1556738/28045615-77fb168a-65de-11e7-9117-2422ebb644ed.png)
+
 
 __Finally:__ Please leave any comments, suggestions, and/or bugs you may find while using this CommandAPI.
