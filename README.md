@@ -160,6 +160,11 @@ public class TestCommand implements CommandListener //CommandListener is require
                     strictArgs = true,
                     // only allow flags as arguments
                     description = "resets stuff!")
+     @CommandHandler(command = COMMAND + ".reset",
+        flags = {@Flag(flag = 'k', usage = "-k resets kingdoms"), 
+                 @Flag(flag = 'r', usage = "-r resets reficules")},
+        strictArgs = true,
+        description = "resets stuff!")
     public static void testingCommand3(final CommandInfo info) {
         //user gave the argument -f or -*
         if (info.hasFlag('k')) {
