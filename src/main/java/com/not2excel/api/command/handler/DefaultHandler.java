@@ -11,15 +11,19 @@ import java.util.List;
 
 /**
  * @author Richmond Steele, William Reed, kh498
- * @since 12/18/13
- * All rights Reserved
- * Please read included LICENSE file
+ * @since 12/18/13 All rights Reserved Please read included LICENSE file
  */
 public class DefaultHandler implements Handler {
+
     private final QueuedCommand queue;
 
     public DefaultHandler(final QueuedCommand queue) {
         this.queue = queue;
+    }
+
+    private static void sendHelpScreen(final CommandInfo info, final String errorMsg) {
+        info.getSender().sendMessage(ChatColor.RED + errorMsg);
+        RegisteredCommand.displayDefaultUsage(info);
     }
 
     @Override
@@ -136,11 +140,6 @@ public class DefaultHandler implements Handler {
         } catch (final IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
-    }
-
-    private static void sendHelpScreen(final CommandInfo info, final String errorMsg) {
-        info.getSender().sendMessage(ChatColor.RED + errorMsg);
-        RegisteredCommand.displayDefaultUsage(info);
     }
 
     @Flag(flag = '*')

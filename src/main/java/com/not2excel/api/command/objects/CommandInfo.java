@@ -15,12 +15,12 @@ import java.util.regex.Pattern;
 
 /**
  * @author Richmond Steele, kh498
- * @since 12/17/13
- * All rights Reserved
- * Please read included LICENSE file
+ * @since 12/17/13 All rights Reserved Please read included LICENSE file
  */
 @SuppressWarnings({"unused", "SameParameterValue", "WeakerAccess"})
 public class CommandInfo {
+
+    private static final Pattern FLAG_PATTERN = Pattern.compile("^-[a-zA-Z*]$");
     private final RegisteredCommand registeredCommand;
     private final ParentCommand parentCommand;
     private final CommandHandler commandHandler;
@@ -28,13 +28,11 @@ public class CommandInfo {
     private final String command;
     private final String usage;
     private final String permission;
-    private List<String> args;
     private final boolean playersOnly;
     private final Set<Character> flags;
+    private List<String> args;
     private boolean hasAsteriskFlag;
     private String fullUsage;
-
-    private static final Pattern FLAG_PATTERN = Pattern.compile("^-[a-zA-Z*]$");
 
     public CommandInfo(final RegisteredCommand registeredCommand, final ParentCommand parentCommand,
                        final CommandHandler commandHandler, final CommandSender sender, final String command,
@@ -67,7 +65,9 @@ public class CommandInfo {
          Iterate through tempArgs and look for flags. (eks -f or -R)
          */
         for (final String arg : cmdArgs) {
-            if (arg.length() == 0) { continue; }
+            if (arg.length() == 0) {
+                continue;
+            }
             if (matchesFlagPattern(arg)) {
                 if (!this.hasAsteriskFlag && arg.charAt(1) == '*') {
                     this.hasAsteriskFlag = true;
@@ -75,6 +75,16 @@ public class CommandInfo {
                 this.flags.add(arg.charAt(1));
             }
         }
+    }
+
+    /**
+     * @param str
+     *     The string to check
+     *
+     * @return If str is formatted as a flag
+     */
+    public static boolean matchesFlagPattern(final String str) {
+        return FLAG_PATTERN.matcher(str).matches();
     }
 
     public RegisteredCommand getRegisteredCommand() {
@@ -176,11 +186,13 @@ public class CommandInfo {
     }
 
     /**
-     * @param index The argument you want
+     * @param index
+     *     The argument you want
      *
      * @return the argument at {@code index}
      *
-     * @throws CommandException if {@code index} is greater than the size of arguments
+     * @throws CommandException
+     *     if {@code index} is greater than the size of arguments
      */
     public String getIndex(final int index) throws CommandException {
         if (index >= this.args.size() || index < 0) {
@@ -199,11 +211,13 @@ public class CommandInfo {
     /**
      * Try and parse an argument as an integer
      *
-     * @param index The argument you want
+     * @param index
+     *     The argument you want
      *
      * @return the argument at {@code index} as int
      *
-     * @throws CommandException if {@code index} is invalid or the argument is not an integer
+     * @throws CommandException
+     *     if {@code index} is invalid or the argument is not an integer
      */
     public int getInt(final int index) throws CommandException {
         if (index >= this.args.size() || index < 0) {
@@ -222,11 +236,13 @@ public class CommandInfo {
     /**
      * Try and parse an argument as an integer
      *
-     * @param index        The argument you want
-     * @param defaultValue if a {@code CommandException} happens return this value
+     * @param index
+     *     The argument you want
+     * @param defaultValue
+     *     if a {@code CommandException} happens return this value
      *
-     * @return the argument at {@code index} as int or {@code defaultValue} if a
-     * a {@code CommandException} is encountered
+     * @return the argument at {@code index} as int or {@code defaultValue} if a a {@code CommandException} is
+     * encountered
      */
     public int getInt(final int index, final int defaultValue) {
         if (index >= this.args.size() || index < 0) {
@@ -242,11 +258,13 @@ public class CommandInfo {
     /**
      * Try and parse an argument as an double
      *
-     * @param index The argument you want
+     * @param index
+     *     The argument you want
      *
      * @return the argument at {@code index} as double
      *
-     * @throws CommandException if {@code index} is invalid or the argument is not an double
+     * @throws CommandException
+     *     if {@code index} is invalid or the argument is not an double
      */
     public double getDouble(final int index) throws CommandException {
         if (index >= this.args.size() || index < 0) {
@@ -265,11 +283,13 @@ public class CommandInfo {
     /**
      * Try and parse an argument as an double
      *
-     * @param index        The argument you want
-     * @param defaultValue if a {@code CommandException} happens return this value
+     * @param index
+     *     The argument you want
+     * @param defaultValue
+     *     if a {@code CommandException} happens return this value
      *
-     * @return the argument at {@code index} as double or {@code defaultValue} if a
-     * a {@code CommandException} is encountered
+     * @return the argument at {@code index} as double or {@code defaultValue} if a a {@code CommandException} is
+     * encountered
      */
     public double getDouble(final int index, final double defaultValue) {
         if (index >= this.args.size() || index < 0) {
@@ -359,16 +379,19 @@ public class CommandInfo {
     }
 
     /**
-     * @param flag The flag you want to check is present
+     * @param flag
+     *     The flag you want to check is present
      *
-     * @return {@code true} if the flag has been found or {@link #hasAsteriskFlag()} is {@code true}, {@code false} otherwise.
+     * @return {@code true} if the flag has been found or {@link #hasAsteriskFlag()} is {@code true}, {@code false}
+     * otherwise.
      */
     public boolean hasFlag(final char flag) {
         return this.hasAsteriskFlag || this.flags.contains(flag);
     }
 
     /**
-     * @param s A string containing the flags to check
+     * @param s
+     *     A string containing the flags to check
      *
      * @return true if one of the chars in the string matches the flag in the present command
      */
@@ -391,14 +414,5 @@ public class CommandInfo {
      */
     public boolean hasAsteriskFlag() {
         return this.hasAsteriskFlag;
-    }
-
-    /**
-     * @param str The string to check
-     *
-     * @return If str is formatted as a flag
-     */
-    public static boolean matchesFlagPattern(final String str) {
-        return FLAG_PATTERN.matcher(str).matches();
     }
 }

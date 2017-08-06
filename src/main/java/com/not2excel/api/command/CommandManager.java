@@ -27,14 +27,14 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @SuppressWarnings("unused")
 public class CommandManager {
+
+    private final static boolean DEBUG = false;
+    public static CommandManager instance;
     private final Plugin plugin;
     private final Map<Integer, List<QueuedCommand>> queuedCommands = new ConcurrentHashMap<>();
     private final Map<String, RegisteredCommand> registeredCommands = new ConcurrentHashMap<>();
     private final LevelLogger logger;
     private CommandMap commandMap;
-    public static CommandManager instance;
-
-    private final static boolean DEBUG = false;
 
     public CommandManager(final Plugin plugin) {
         this.plugin = plugin;
@@ -42,6 +42,24 @@ public class CommandManager {
         this.logger.setLogType("CommandHandlerAPI");
         this.logger.setTimeStamped(false);
         instance = this;
+    }
+
+    private static ParentCommand recursivelyFindInnerMostParent(final String command, final ParentCommand parentCommand,
+                                                                int start) {
+        final String[] list = command.split("\\.");
+        if (start > list.length - 1) {
+            return parentCommand;
+        }
+        if (parentCommand.hasChild(list[start])) {
+            return recursivelyFindInnerMostParent(command, parentCommand.getChild(list[start]), ++start);
+        }
+        else {
+            return parentCommand;
+        }
+    }
+
+    public static CommandManager getInstance() {
+        return instance;
     }
 
     public void registerHelp() {
@@ -101,7 +119,9 @@ public class CommandManager {
                     final RegisteredCommand registered;
                     synchronized (this.registeredCommands) {
                         if (!this.registeredCommands.containsKey(list[0])) {
-                            if (DEBUG) { this.logger.log("Registering Empty Base Command: " + list[0]); }
+                            if (DEBUG) {
+                                this.logger.log("Registering Empty Base Command: " + list[0]);
+                            }
                             final RegisteredCommand registeredEmpty = new RegisteredCommand(null);
                             registeredEmpty.setCommand(list[0]);
                             synchronized (this.registeredCommands) {
@@ -136,7 +156,9 @@ public class CommandManager {
         if (list.length == 2) {
             registered.addChild(s, child);
             registered.getChild(s).setHandler(new DefaultHandler(queue));
-            if (DEBUG) { this.logger.log("Registered queued command: " + commandHandler.command()); }
+            if (DEBUG) {
+                this.logger.log("Registered queued command: " + commandHandler.command());
+            }
             return;
         }
 
@@ -157,7 +179,9 @@ public class CommandManager {
             }
             registered.addChild(s, child);
             registered.getChild(s).setHandler(new DefaultHandler(queue));
-            if (DEBUG) { this.logger.log("Registered queued command: " + commandHandler.command()); }
+            if (DEBUG) {
+                this.logger.log("Registered queued command: " + commandHandler.command());
+            }
         }
         else if (parentCommand.getClass().equals(DefaultChildCommand.class)) {
             final DefaultChildCommand defChildCmd = (DefaultChildCommand) parentCommand;
@@ -172,7 +196,9 @@ public class CommandManager {
             }
             defChildCmd.addChild(s, child);
             defChildCmd.getChild(s).setHandler(new DefaultHandler(queue));
-            if (DEBUG) { this.logger.log("Registered queued command: " + commandHandler.command()); }
+            if (DEBUG) {
+                this.logger.log("Registered queued command: " + commandHandler.command());
+            }
         }
         else {
             final ChildCommand childCmd = (ChildCommand) parentCommand;
@@ -187,7 +213,9 @@ public class CommandManager {
             }
             childCmd.addChild(s, child);
             childCmd.getChild(s).setHandler(new DefaultHandler(queue));
-            if (DEBUG) { this.logger.log("Registered queued command: " + commandHandler.command()); }
+            if (DEBUG) {
+                this.logger.log("Registered queued command: " + commandHandler.command());
+            }
         }
 
         registerChild(queue, commandHandler, registered, s, isAlias);
@@ -199,25 +227,11 @@ public class CommandManager {
         }
     }
 
-    private static ParentCommand recursivelyFindInnerMostParent(final String command, final ParentCommand parentCommand,
-                                                                int start) {
-        final String[] list = command.split("\\.");
-        if (start > list.length - 1) {
-            return parentCommand;
-        }
-        if (parentCommand.hasChild(list[start])) {
-            return recursivelyFindInnerMostParent(command, parentCommand.getChild(list[start]), ++start);
-        }
-        else {
-            return parentCommand;
-        }
-    }
-
     /**
      * This is here for legacy reasons. Wont do anything upon runtime.
      *
-     * @deprecated Use {@link #registerCommands() } instead as it will load
-     * find all classes that has {@link CommandListener} implemented.
+     * @deprecated Use {@link #registerCommands() } instead as it will load find all classes that has {@link
+     * CommandListener} implemented.
      */
     @Deprecated
     public void registerCommands(final Object classObject) { }
@@ -228,12 +242,16 @@ public class CommandManager {
             return;
         }
         for (final Method method : clazz.getDeclaredMethods()) {
-            if (DEBUG) { this.logger.log("Testing if method '" + method.getName() + "' is a CommandHandler"); }
+            if (DEBUG) {
+                this.logger.log("Testing if method '" + method.getName() + "' is a CommandHandler");
+            }
             final CommandHandler commandHandler = method.getAnnotation(CommandHandler.class);
             if (commandHandler == null || !method.getParameterTypes()[0].equals(CommandInfo.class)) {
                 continue;
             }
-            if (DEBUG) { this.logger.log("Method '" + method.getName() + "' is a CommandHandler"); }
+            if (DEBUG) {
+                this.logger.log("Method '" + method.getName() + "' is a CommandHandler");
+            }
             Object object = clazz;
             if (Modifier.isStatic(method.getModifiers())) {
                 object = null;
@@ -250,7 +268,9 @@ public class CommandManager {
 
     private void registerBaseCommand(final Object classObject, final Method method,
                                      final CommandHandler commandHandler) {
-        if (DEBUG) { this.logger.log("Registering Base Command: " + commandHandler.command()); }
+        if (DEBUG) {
+            this.logger.log("Registering Base Command: " + commandHandler.command());
+        }
         final QueuedCommand queue = new QueuedCommand(classObject, method);
         final RegisteredCommand registered = new RegisteredCommand(queue);
         synchronized (this.registeredCommands) {
@@ -280,7 +300,9 @@ public class CommandManager {
 
     private void queueCommand(final Object classObject, final Method method, final CommandHandler commandHandler) {
         synchronized (this.queuedCommands) {
-            if (DEBUG) { this.logger.log("Queueing Command: " + commandHandler.command()); }
+            if (DEBUG) {
+                this.logger.log("Queueing Command: " + commandHandler.command());
+            }
             final QueuedCommand queue = new QueuedCommand(classObject, method);
             final int numberOfChildren = commandHandler.command().split("\\.").length - 1;
             List<QueuedCommand> queueList = this.queuedCommands.get(numberOfChildren);
@@ -312,9 +334,7 @@ public class CommandManager {
     public Plugin getPlugin() {
         return this.plugin;
     }
-    public static CommandManager getInstance() {
-        return instance;
-    }
+
     public Map<String, RegisteredCommand> getRegisteredCommands() {
         return this.registeredCommands;
     }

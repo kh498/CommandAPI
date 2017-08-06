@@ -5,20 +5,20 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Richmond Steele
- * @since 12/18/13
- * All rights Reserved
- * Please read included LICENSE file
+ * @since 12/18/13 All rights Reserved Please read included LICENSE file
  */
 @SuppressWarnings("WeakerAccess")
 public class ParentCommand {
-    private final Map<String, ChildCommand> childCommands = new ConcurrentHashMap<>();
-    private ChildCommand parentAsChild;
-    private final Map<String, ChildCommand> childBaseCommands = new ConcurrentHashMap<>();
 
+    private final Map<String, ChildCommand> childCommands = new ConcurrentHashMap<>();
+    private final Map<String, ChildCommand> childBaseCommands = new ConcurrentHashMap<>();
+    private ChildCommand parentAsChild;
 
     /**
-     * @param subCommand The subcommand to be added
-     * @param child      The child of this parent
+     * @param subCommand
+     *     The subcommand to be added
+     * @param child
+     *     The child of this parent
      */
     public void addChild(final String subCommand, final ChildCommand child) {
         {
@@ -29,7 +29,8 @@ public class ParentCommand {
     }
 
     /**
-     * @param childStr key whose presence in this map is to be tested, case insensitive
+     * @param childStr
+     *     key whose presence in this map is to be tested, case insensitive
      *
      * @return true if this map contains a mapping for the specified child
      */
@@ -40,7 +41,8 @@ public class ParentCommand {
     }
 
     /**
-     * @param childStr the child whose associated value is to be returned, case insensitive
+     * @param childStr
+     *     the child whose associated value is to be returned, case insensitive
      *
      * @return the value to which the specified key is mapped, or null if this map contains no mapping for the child
      */

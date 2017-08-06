@@ -18,11 +18,10 @@ import java.util.Map.Entry;
 
 /**
  * @author Richmond Steele, kh498
- * @since 12/17/13
- * All rights Reserved
- * Please read included LICENSE file
+ * @since 12/17/13 All rights Reserved Please read included LICENSE file
  */
 public class RegisteredCommand extends ParentCommand implements CommandExecutor, Handler {
+
     private final QueuedCommand queuedCommand;
     private String command = "";
     private Handler handler = this;
@@ -76,6 +75,12 @@ public class RegisteredCommand extends ParentCommand implements CommandExecutor,
         return strings;
     }
 
+    public static void displayDefaultUsage(final CommandInfo info) {
+        final CommandSender sender = info.getSender();
+        sender.sendMessage(ChatColor.RED + "Usage: " + info.getExplainedUsage());
+        displayChildUsage(info);
+    }
+
     @Override
     public boolean onCommand(final CommandSender sender, final Command command, final String s, final String[] args) {
         try {
@@ -97,12 +102,6 @@ public class RegisteredCommand extends ParentCommand implements CommandExecutor,
         } catch (IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
-    }
-
-    public static void displayDefaultUsage(final CommandInfo info) {
-        final CommandSender sender = info.getSender();
-        sender.sendMessage(ChatColor.RED + "Usage: " + info.getExplainedUsage());
-        displayChildUsage(info);
     }
 
     private Method getMethod() {

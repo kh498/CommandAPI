@@ -11,11 +11,10 @@ import java.util.*;
 
 /**
  * @author Richmond Steele, kh498
- * @since 12/16/13
- * All rights Reserved
- * Please read included LICENSE file
+ * @since 12/16/13 All rights Reserved Please read included LICENSE file
  */
 public class AbstractCommand extends Command {
+
     public CommandExecutor executor;
 
     public AbstractCommand(final String name) {
@@ -28,8 +27,8 @@ public class AbstractCommand extends Command {
     }
 
     @Override
-    public List<String> tabComplete(final CommandSender sender, final String alias,
-                                    final String[] args) throws IllegalArgumentException {
+    public List<String> tabComplete(final CommandSender sender, final String alias, final String[] args)
+    throws IllegalArgumentException {
         final CommandManager cmdManager = CommandManager.getInstance();
         final Map<String, RegisteredCommand> registeredCmds = cmdManager.getRegisteredCommands();
         final RegisteredCommand regCmd = registeredCmds.get(this.getName());
@@ -37,7 +36,7 @@ public class AbstractCommand extends Command {
         if (regCmd != null) {
             final Set<String> subCmdsSet = new TreeSet<>();
             subCmdsSet.addAll(regCmd.getNoAliasesChildCommands().keySet());
-            
+
             if (!subCmdsSet.contains("help")) {
                 subCmdsSet.add("help");
             }

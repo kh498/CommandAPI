@@ -4,11 +4,10 @@ import java.lang.reflect.Method;
 
 /**
  * @author Richmond Steele
- * @since 12/17/13
- * All rights Reserved
- * Please read included LICENSE file
+ * @since 12/17/13 All rights Reserved Please read included LICENSE file
  */
 public class QueuedCommand {
+
     private final Object object;
     private final Method method;
 

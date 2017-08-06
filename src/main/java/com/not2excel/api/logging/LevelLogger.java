@@ -2,11 +2,10 @@ package com.not2excel.api.logging;
 
 /**
  * @author Richmond Steele
- * @since 12/18/13
- * All rights Reserved
- * Please read included LICENSE file
+ * @since 12/18/13 All rights Reserved Please read included LICENSE file
  */
 public class LevelLogger extends Logger<Object> {
+
     /**
      * Singleton instance
      */
@@ -20,7 +19,9 @@ public class LevelLogger extends Logger<Object> {
      * @return instance
      */
     public static LevelLogger getInstance() {
-        if (instance == null) { instance = getNewInstance(); }
+        if (instance == null) {
+            instance = getNewInstance();
+        }
         return instance;
     }
 

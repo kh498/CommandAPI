@@ -7,11 +7,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Richmond Steele
- * @since 12/18/13
- * All rights Reserved
- * Please read included LICENSE file
+ * @since 12/18/13 All rights Reserved Please read included LICENSE file
  */
 public class Logger<T> {
+
     /**
      * Singleton instance
      */
@@ -38,7 +37,9 @@ public class Logger<T> {
      * @return instance
      */
     public static Logger<Object> getInstance() {
-        if (instance == null) { instance = getNewInstance(); }
+        if (instance == null) {
+            instance = getNewInstance();
+        }
         return instance;
     }
 
@@ -54,8 +55,10 @@ public class Logger<T> {
     /**
      * Logs data to the console
      *
-     * @param type Prefix for the println
-     * @param data data to log
+     * @param type
+     *     Prefix for the println
+     * @param data
+     *     data to log
      */
     public void log(final T type, final T data) {
         System.out.println(String.format("[%s %s]: %s", getCurrentTime(), type, data.toString()));
@@ -79,9 +82,12 @@ public class Logger<T> {
     /**
      * Saves the logged data to a Map for usage in a possible console or something
      *
-     * @param type type of log
-     * @param time timestamp of logged data
-     * @param data logged data
+     * @param type
+     *     type of log
+     * @param time
+     *     timestamp of logged data
+     * @param data
+     *     logged data
      */
     private void saveLog(final T type, final String time, final T data) {
         this.organizedLogs.put(type.toString(), String.format("[%s]: %s", time, data.toString()));

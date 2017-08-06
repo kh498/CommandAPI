@@ -4,17 +4,18 @@ import java.util.Random;
 
 /**
  * @author Richmond Steele
- * @since 12/18/13
- * All rights Reserved
- * Please read included LICENSE file
+ * @since 12/18/13 All rights Reserved Please read included LICENSE file
  */
 public class StringUtil {
+
     private static final Random random = new Random();
 
 
     public static boolean containsChar(final char c, final Character[] charSet) {
         for (final char test : charSet) {
-            if (test == c) { return true; }
+            if (test == c) {
+                return true;
+            }
         }
         return false;
     }
@@ -22,8 +23,10 @@ public class StringUtil {
     /**
      * Generates a random string
      *
-     * @param length    - length of the random string
-     * @param charArray - include a char array if you wish the random string to only include those chars
+     * @param length
+     *     - length of the random string
+     * @param charArray
+     *     - include a char array if you wish the random string to only include those chars
      *
      * @return random string
      */
@@ -57,12 +60,13 @@ public class StringUtil {
     /**
      * Check if two characters are equal ignoring the case
      *
-     * @param c1 A char
-     * @param c2 Another char
+     * @param c1
+     *     A char
+     * @param c2
+     *     Another char
      *
-     * @return {@code true} if the argument
-     * represents an equivalent {@code String} ignoring case; {@code
-     * false} otherwise
+     * @return {@code true} if the argument represents an equivalent {@code String} ignoring case; {@code false}
+     * otherwise
      */
     public static boolean equalsIgnoreCase(final char c1, final char c2) {
         return Character.toUpperCase(c1) == Character.toUpperCase(c2);

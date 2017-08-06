@@ -11,31 +11,31 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 /**
- * Recursive idea based off ClassEnumerator by Dave Dopson
- * (used the recursion idea from him to loop through all inner directories as well)
- * I had a very inefficient method of looping through inner directories.
- * When I saw Dave Dopson's ClassEnumerator I realized I could have just used simple recursion to efficiently loop.
+ * Recursive idea based off ClassEnumerator by Dave Dopson (used the recursion idea from him to loop through all inner
+ * directories as well) I had a very inefficient method of looping through inner directories. When I saw Dave Dopson's
+ * ClassEnumerator I realized I could have just used simple recursion to efficiently loop.
  *
  * @author Richmond Steele
- * @since 8/28/13
- * All rights Reserved
- * Please read included LICENSE file
+ * @since 8/28/13 All rights Reserved Please read included LICENSE file
  */
 public class ClassEnumerator {
+
     /**
      * Singleton instance
      */
     private static volatile ClassEnumerator instance;
 
     /**
-     * Returns the singleton instance
-     * creates one if the instance is null
+     * Returns the singleton instance creates one if the instance is null
      *
      * @return instance
      */
     public static ClassEnumerator getInstance() {
-        if (instance == null) { }
-        { instance = new ClassEnumerator(); }
+        if (instance == null) {
+        }
+        {
+            instance = new ClassEnumerator();
+        }
         return instance;
     }
 
@@ -44,7 +44,8 @@ public class ClassEnumerator {
      * <p>
      * Recurses through if necessary
      *
-     * @param location directory to parse
+     * @param location
+     *     directory to parse
      *
      * @return class array
      */
@@ -54,7 +55,7 @@ public class ClassEnumerator {
             for (final File file : Arrays.asList(location.listFiles())) {
                 try {
                     final ClassLoader classLoader =
-                        new URLClassLoader(new URL[]{file.toURI().toURL()}, this.getClass().getClassLoader());
+                        new URLClassLoader(new URL[] {file.toURI().toURL()}, this.getClass().getClassLoader());
                     if (file.getName().toLowerCase().trim().endsWith(".class")) {
                         classes.add(classLoader.loadClass(file.getName().replace(".class", "").replace("/", ".")));
                     }
@@ -72,7 +73,7 @@ public class ClassEnumerator {
         else {
             try {
                 final ClassLoader classLoader =
-                    new URLClassLoader(new URL[]{location.toURI().toURL()}, this.getClass().getClassLoader());
+                    new URLClassLoader(new URL[] {location.toURI().toURL()}, this.getClass().getClassLoader());
                 if (location.getName().toLowerCase().trim().endsWith(".class")) {
                     classes.add(classLoader.loadClass(location.getName().replace(".class", "").replace("/", ".")));
                 }
@@ -90,8 +91,8 @@ public class ClassEnumerator {
     }
 
     /**
-     * Returns the class array of all classes within the current Running Jar
-     * Utilizes the code source which could be a Jar file or could just be a directory of class files
+     * Returns the class array of all classes within the current Running Jar Utilizes the code source which could be a
+     * Jar file or could just be a directory of class files
      *
      * @return class array
      */
@@ -102,7 +103,7 @@ public class ClassEnumerator {
         URI uri = null;
         try {
             uri = object.getClass().getProtectionDomain().getCodeSource().getLocation().toURI();
-            classLoader = new URLClassLoader(new URL[]{uri.toURL()}, ClassEnumerator.class.getClassLoader());
+            classLoader = new URLClassLoader(new URL[] {uri.toURL()}, ClassEnumerator.class.getClassLoader());
         } catch (final URISyntaxException | MalformedURLException e) {
             e.printStackTrace();
         }
@@ -122,8 +123,10 @@ public class ClassEnumerator {
     /**
      * Returns all class files inside a jar
      *
-     * @param file        jar file
-     * @param classLoader classloader created previously using the jar file
+     * @param file
+     *     jar file
+     * @param classLoader
+     *     classloader created previously using the jar file
      *
      * @return class list
      */
@@ -151,7 +154,8 @@ public class ClassEnumerator {
      * <p>
      * Recurses if necessary
      *
-     * @param directory directory file to traverse
+     * @param directory
+     *     directory file to traverse
      *
      * @return list of classes
      *
@@ -179,10 +183,10 @@ public class ClassEnumerator {
     }
 
     /**
-     * Loads a class based upon the name
-     * Simple wrapper that catches ClassNotFoundException
+     * Loads a class based upon the name Simple wrapper that catches ClassNotFoundException
      *
-     * @param className name of class (.class is pre removed)
+     * @param className
+     *     name of class (.class is pre removed)
      *
      * @return Class if it was loaded properly
      */

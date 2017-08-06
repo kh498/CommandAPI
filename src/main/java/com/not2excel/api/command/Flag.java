@@ -13,8 +13,8 @@ import java.lang.annotation.Target;
 public @interface Flag {
 
     /**
-     * The character to use for this flag. If the char is '*' (asterisk) then this character
-     * will be used as a select everything flag.
+     * The character to use for this flag. If the char is '*' (asterisk) then this character will be used as a select
+     * everything flag.
      */
     char flag();
 

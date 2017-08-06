@@ -7,27 +7,22 @@ import java.lang.annotation.Target;
 
 /**
  * @author Richmond Steele, William Reed, kh498
- * @since 12/16/13
- * All rights Reserved
- * Please read included LICENSE file
+ * @since 12/16/13 All rights Reserved Please read included LICENSE file
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface CommandHandler {
+
     /**
-     * Label of the command
-     * Sub-commands have '.' to split the child from the parent
-     * /test => test
-     * /test set => test.set
+     * Label of the command Sub-commands have '.' to split the child from the parent /test => test /test set =>
+     * test.set
      *
      * @return command label
      */
     String command();
 
     /**
-     * Aliases of the command
-     * /test2 => /test
-     * /test set2 => /test set
+     * Aliases of the command /test2 => /test /test set2 => /test set
      *
      * @return command aliases
      */
@@ -63,24 +58,21 @@ public @interface CommandHandler {
     String usage() default "";
 
     /**
-     * Description of command
-     * /test => Testing the dynamic CommandAPI
+     * Description of command /test => Testing the dynamic CommandAPI
      *
      * @return command description
      */
     String description() default "";
 
     /**
-     * Minimum arguments the command must have
-     * must be > 0
+     * Minimum arguments the command must have must be > 0
      *
      * @return min number of args
      */
     int min() default 0;
 
     /**
-     * Max arguments the command can have
-     * -1 is unlimited
+     * Max arguments the command can have -1 is unlimited
      *
      * @return max number of args
      */
@@ -94,27 +86,27 @@ public @interface CommandHandler {
     boolean playerOnly() default false;
 
     /**
-     * Defines the flags available for this command. A flag is a single character such as {@code -f} that will
-     * alter the behaviour of the command. Each character in this string will be counted as a valid flag: extra flags
-     * will be discarded. If one of the flags is '*' (asterisks) then this will override the default asterisks flag.
-     * With this you can set the permission of the asterisks flag. If you do not want to have the asterisk flag then set
-     * {@code asteriskFlag = false}
+     * Defines the flags available for this command. A flag is a single character such as {@code -f} that will alter the
+     * behaviour of the command. Each character in this string will be counted as a valid flag: extra flags will be
+     * discarded. If one of the flags is '*' (asterisks) then this will override the default asterisks flag. With this
+     * you can set the permission of the asterisks flag. If you do not want to have the asterisk flag then set {@code
+     * asteriskFlag = false}
      * <p>
      * Flags can only be any english character (a-z and A-Z) including '*' (asterisks) as a catch all.
      */
     Flag[] flags() default {};
 
     /**
-     * Defines if asterisks (*) can be used as a catch all. If this is set to false but there is declared a
-     * asterisk flag with the {@code flags()} attribute that flag will function as an asterisk flag. Note that
-     * it is not necessary to enable this to override the permission of the asterisk flag.
+     * Defines if asterisks (*) can be used as a catch all. If this is set to false but there is declared a asterisk
+     * flag with the {@code flags()} attribute that flag will function as an asterisk flag. Note that it is not
+     * necessary to enable this to override the permission of the asterisk flag.
      */
     boolean asteriskFlag() default true;
 
     /**
-     * Defines if there can be arbitrary variables. If set to true the command cannot have any unknown variables.
-     * The arguments will either be a subcommand or a flag, if not an error is thrown. This means that flags are
-     * ignored and can be used.
+     * Defines if there can be arbitrary variables. If set to true the command cannot have any unknown variables. The
+     * arguments will either be a subcommand or a flag, if not an error is thrown. This means that flags are ignored and
+     * can be used.
      * <p>
      * It is suggested that this is set to true if you only want flags as args.
      */

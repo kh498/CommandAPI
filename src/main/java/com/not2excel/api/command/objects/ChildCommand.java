@@ -12,13 +12,13 @@ import java.util.Set;
 
 /**
  * @author Richmond Steele, kh498
- * @since 12/17/13
- * All rights Reserved
- * Please read included LICENSE file
+ * @since 12/17/13 All rights Reserved Please read included LICENSE file
  */
 public class ChildCommand extends ParentCommand {
+
     private final CommandHandler commandHandler;
     private final boolean isAlias;
+    private final Set<Character> flags;
     protected String command = "";
     protected String usage = "";
     protected String description = "";
@@ -27,7 +27,6 @@ public class ChildCommand extends ParentCommand {
     private String displayFlag = "";
     private String displayFlagDesc = "";
     private String fullUsage;
-    private final Set<Character> flags;
 
     public ChildCommand(final CommandHandler commandHandler, final boolean isAlias) {
         setParentAsChild(this);
@@ -108,12 +107,15 @@ public class ChildCommand extends ParentCommand {
 
 
     /**
-     * @param checkFlag The flag to check
+     * @param checkFlag
+     *     The flag to check
      *
      * @return The flag corresponding ot the char
      */
     public Flag getFlagAnnotation(final char checkFlag) {
-        if (this.commandHandler == null) {return null;}
+        if (this.commandHandler == null) {
+            return null;
+        }
         for (final Flag flag : this.commandHandler.flags()) {
             if (flag.flag() == checkFlag) {
                 return flag;
@@ -123,7 +125,8 @@ public class ChildCommand extends ParentCommand {
     }
 
     /**
-     * @param c The character to check
+     * @param c
+     *     The character to check
      *
      * @return If this command has a flag with the character {@code c}
      */
