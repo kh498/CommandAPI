@@ -28,7 +28,7 @@ This is a CommandAPI that is developed to avoid having to statically register an
 <dependency>
     <groupId>com.not2excel.api</groupId>
     <artifactId>CommandAPI</artifactId>
-    <version>2.0</version>
+    <version>3.1.0</version>
 </dependency>
 ```
 
