@@ -267,9 +267,14 @@ public class CommandManager {
     }
 
     private void registerBaseCommand(final AbstractCommand command) {
-        this.logger.log("Registering command '" + command.getName() + '\'');
+
         if (getCommandMap().getCommand(command.getName()) == null) {
             getCommandMap().register(this.plugin.getName(), command);
+            this.logger.log("Registered command '" + command.getName() + '\'');
+        }
+        else {
+            this.logger.log("Failed to registering command '" + command.getName() +
+                            "\' with CommandAPI due to it already being registered!");
         }
     }
 
